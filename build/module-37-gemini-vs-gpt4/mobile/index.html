@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Module 37 - Gemini vs. GPT-4 (Mobile)</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="card">
+    <button class="theme-toggle" aria-label="Toggle theme">
+      <svg id="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+      <svg id="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+    <div class="steps-panel">
+      <h3>Steps to interact</h3>
+      <ol>
+        <li>Toggle "Show confirmed facts only."</li>
+        <li>Compare the table and the context-window bar chart.</li>
+      </ol>
+    </div>
+    
+    <div class="controls">
+      <label class="toggle-label">
+        <input type="checkbox" id="facts-toggle">
+        <span class="toggle-slider"></span>
+        Show confirmed facts only
+      </label>
+    </div>
+
+    <div class="table-container">
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Claim</th>
+            <th>Gemini</th>
+            <th>GPT-4</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Native multimodal pretraining</td>
+            <td>Confirmed</td>
+            <td>Not applicable</td>
+          </tr>
+          <tr>
+            <td>Officially confirmed MoE</td>
+            <td>Confirmed</td>
+            <td class="unconfirmed">Reported, unconfirmed</td>
+          </tr>
+          <tr>
+            <td>Training hardware</td>
+            <td>Confirmed</td>
+            <td class="unconfirmed">Not officially disclosed</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="chart-container">
+      <h4>Context (tokens)</h4>
+      <canvas id="contextChart"></canvas>
+    </div>
+
+    <div class="explain-panel" id="explain">Toggle to highlight only the verified facts between the models.</div>
+    <div class="caption" id="caption">Toggle off the unconfirmed claims — notice how little is actually left. The context window bars, though, are real, published numbers you can compare directly.</div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>

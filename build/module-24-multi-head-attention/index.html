@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 24 - Multi-Head Attention</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+    <div class="card">
+        <button class="theme-toggle" aria-label="Toggle theme">
+            <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+            <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+        <div class="steps-panel">
+            <ol>
+                <li>Toggle each of the 3 head checkboxes on or off.</li>
+                <li>Compare which lines appear from "prepared" each time.</li>
+            </ol>
+        </div>
+        
+        <div class="controls-row">
+            <label class="head-toggle" style="--head-color: #4f46e5;">
+                <input type="checkbox" id="head-1" checked> Head 1 (Subject)
+            </label>
+            <label class="head-toggle" style="--head-color: #6366f1;">
+                <input type="checkbox" id="head-2" checked> Head 2 (Object)
+            </label>
+            <label class="head-toggle" style="--head-color: #818cf8;">
+                <input type="checkbox" id="head-3" checked> Head 3 (Modifier)
+            </label>
+        </div>
+
+        <div class="explain-panel" id="explain">All 3 heads are active, showing connections from the word "prepared" to its relevant context.</div>
+        
+        <div id="diagram" class="diagram-container"></div>
+        
+        <div class="caption">Enable all three heads at once — 'prepared' is tracking its subject, its object, and its modifying clause simultaneously. One head could only afford to track one of these.</div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

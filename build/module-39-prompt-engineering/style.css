@@ -1,0 +1,24 @@
+:root {
+  --bg: #ffffff;
+  --text: #333333;
+  --primary: #2563eb;
+  --frozen: #e5e7eb;
+  --active: #d97706;
+}
+[data-theme="dark"] {
+  --bg: #1e1e1e;
+  --text: #f9fafb;
+  --frozen: #374151;
+}
+body { background: var(--bg); color: var(--text); font-family: sans-serif; padding: 20px; transition: background 0.3s, color 0.3s; }
+.card { border: 1px solid var(--frozen); border-radius: 8px; padding: 20px; max-width: 600px; margin: 0 auto; position: relative; }
+.theme-toggle { position: absolute; top: 20px; right: 20px; background: none; border: none; cursor: pointer; color: var(--text); width: 24px; height: 24px; }
+.steps-panel { background: var(--frozen); padding: 10px; border-radius: 4px; margin-bottom: 20px; }
+.tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+.tab-btn { padding: 8px 16px; border: none; background: var(--frozen); color: var(--text); cursor: pointer; border-radius: 4px; transition: background 0.3s; }
+.tab-btn.active { background: var(--primary); color: white; }
+.output-panel { min-height: 100px; padding: 15px; border: 1px solid var(--frozen); border-radius: 4px; transition: opacity 0.25s; opacity: 1; margin-bottom: 20px; }
+.output-panel.fade { opacity: 0; }
+.explain-panel { font-size: 0.9em; margin-bottom: 10px; }
+.caption { font-style: italic; opacity: 0; transition: opacity 0.5s; font-size: 0.9em; }
+.caption.visible { opacity: 1; }

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Module 30 - Temperature (Mobile)</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="card">
+        <button class="theme-toggle" aria-label="Toggle theme">
+            <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+            <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+        <div class="steps-panel">
+            <ol>
+                <li>Drag the "Temperature" slider.</li>
+                <li>Watch the bar chart reshape.</li>
+                <li>Tap "Sample one token" to draw one.</li>
+            </ol>
+        </div>
+        
+        <div class="controls-row">
+            <label for="temp-slider">Temperature: <span class="readout" id="temp-val">1.0</span></label>
+            <input type="range" id="temp-slider" min="0.1" max="2.0" step="0.05" value="1.0">
+        </div>
+
+        <div class="chart-container">
+            <canvas id="prob-chart"></canvas>
+        </div>
+
+        <div class="legend">
+            <div class="legend-item"><div class="legend-color primary"></div>Candidate token</div>
+            <div class="legend-item"><div class="legend-color success"></div>Token just sampled</div>
+        </div>
+
+        <div class="explain-panel" id="explain">Temperature is 1.0 (default). The distribution represents the exact softmax of the raw logits.</div>
+        
+        <div class="controls-row-btn">
+            <button id="btn-sample" class="btn btn-primary">Sample one token</button>
+        </div>
+        
+        <div class="caption">Same underlying logits the entire time — only the temperature changed. Watch how flat this gets past 1.5, and how sharp it gets below 0.3.</div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

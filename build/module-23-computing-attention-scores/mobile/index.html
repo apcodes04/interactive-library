@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Module 23 - Computing Attention Scores (Mobile)</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+    <div class="card">
+        <button class="theme-toggle" aria-label="Toggle theme">
+            <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+            <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+        
+        <div class="steps-panel">
+            <ol>
+                <li>Tap a stage label, or drag the scrubber.</li>
+                <li>Use Next / Back to step through.</li>
+                <li>Watch the heatmap grid change.</li>
+            </ol>
+        </div>
+        
+        <div class="stage-buttons">
+            <button class="stage-btn" data-stage="0">0</button>
+            <button class="stage-btn" data-stage="1">1</button>
+            <button class="stage-btn" data-stage="2">2</button>
+            <button class="stage-btn" data-stage="3">3</button>
+        </div>
+
+        <div id="diagram" class="diagram-container"></div>
+        
+        <div class="legend" id="legend"></div>
+        
+        <div class="scrubber-container">
+            <input type="range" id="scrubber" min="0" max="3" step="1" value="0">
+        </div>
+
+        <div class="explain-panel" id="explain">Stage 0: Raw dot product scores representing semantic similarity before any scaling or normalization.</div>
+        
+        <div class="controls-row">
+            <button id="btn-back" class="btn btn-secondary">◀</button>
+            <button id="btn-play" class="btn btn-primary">Play</button>
+            <button id="btn-next" class="btn btn-secondary">▶</button>
+            <button id="btn-reset" class="btn btn-reset">Reset</button>
+        </div>
+
+        <div class="caption">Four operations, four visibly different versions of the same matrix — the softmax step is where raw similarity turns into a genuine probability distribution.</div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

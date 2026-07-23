@@ -1,0 +1,39 @@
+:root {
+  --bg: #ffffff;
+  --text: #333333;
+  --primary: #2563eb;
+  --frozen: #e5e7eb;
+  --active: #d97706;
+}
+[data-theme="dark"] {
+  --bg: #1e1e1e;
+  --text: #f9fafb;
+  --frozen: #374151;
+}
+body { background: var(--bg); color: var(--text); font-family: sans-serif; padding: 10px; margin: 0; transition: background 0.3s, color 0.3s; }
+.card { display: flex; flex-direction: column; gap: 10px; position: relative; }
+.theme-toggle { position: absolute; top: 0; right: 0; background: none; border: none; cursor: pointer; color: var(--text); width: 24px; height: 24px; }
+.steps-panel { background: var(--frozen); padding: 10px; border-radius: 4px; font-size: 0.9em; margin-top: 30px; }
+
+.controls { margin-bottom: 10px; display: flex; flex-direction: column; gap: 10px; }
+.dist-toggle button { padding: 8px 12px; border: 1px solid var(--frozen); background: transparent; color: var(--text); cursor: pointer; border-radius:4px; }
+.dist-toggle button.active { background: var(--frozen); font-weight: bold; }
+.slider-row { display: flex; align-items: center; gap: 10px; }
+.slider-row label { width: 50px; font-weight: bold; font-size: 0.9em; }
+input[type="range"] { flex-grow: 1; }
+
+.chart-container { height: 180px; margin-bottom: 15px; }
+.bar-chart { display: flex; align-items: flex-end; gap: 4px; height: 100%; border-bottom: 2px solid var(--frozen); padding: 0 5px; }
+.bar-wrapper { flex-grow: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; height: 100%; position: relative; }
+.bar { width: 100%; background: var(--frozen); transition: 0.3s; border-radius: 4px 4px 0 0; position: relative; overflow: hidden; }
+.bar-label { font-size: 0.6em; margin-top: 2px; text-align: center; }
+
+.bar.k-sel { background: var(--primary); }
+.bar.p-sel::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 5px; background: var(--active); }
+.bar.k-sel.p-sel::after { background: var(--active); }
+
+.readouts { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.9em; }
+
+.explain-panel { font-size: 0.85em; }
+.caption { font-style: italic; opacity: 0; transition: opacity 0.5s; font-size: 0.85em; }
+.caption.visible { opacity: 1; }

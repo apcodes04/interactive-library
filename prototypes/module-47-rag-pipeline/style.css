@@ -1,0 +1,275 @@
+:root {
+  color-scheme: light dark;
+  --bg: #f5f1e6;
+  --card-bg: #fbf8f1;
+  --bg-muted: #ede6d3;
+  --border: #d6c9a0;
+  --text: #2b2620;
+  --text-muted: #6b6355;
+  --primary: #4f46e5;
+  --primary-light: #818cf8;
+  --active: #9c4208;
+  --success: #0f7a52;
+  --danger: #b91c1c;
+  --frozen: #9c9280;
+  --explain-bg: #eee9f7;
+  --cat-1: #0f766e;
+  --cat-2: #c2410c;
+  --cat-3: #be185d;
+  --radius: 12px;
+  --shadow: 0 1px 3px rgba(43,38,32,0.08), 0 4px 12px rgba(43,38,32,0.05);
+  --font: system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: ui-monospace, "SF Mono", Consolas, monospace;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #1e1b16;
+  --card-bg: #2f2a22;
+  --bg-muted: #363026;
+  --border: #4a4232;
+  --text: #f2ead8;
+  --text-muted: #b8ad97;
+  --primary: #8b85f0;
+  --primary-light: #a6a1f5;
+  --active: #f5a524;
+  --success: #34d399;
+  --danger: #f87171;
+  --frozen: #7a7264;
+  --explain-bg: #2a2540;
+  --cat-1: #2dd4bf;
+  --cat-2: #fb923c;
+  --cat-3: #f472b6;
+  --shadow: 0 1px 3px rgba(0,0,0,0.35), 0 4px 14px rgba(0,0,0,0.25);
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  margin: 0;
+  padding: 24px;
+  transition: background 200ms var(--ease-out), color 200ms var(--ease-out);
+}
+
+.card {
+  position: relative;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 24px;
+  max-width: 920px;
+  margin: 0 auto;
+  transition: background 200ms var(--ease-out), border-color 200ms var(--ease-out);
+}
+
+.theme-toggle {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--bg-muted);
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 150ms var(--ease-out), background 150ms;
+}
+.theme-toggle:hover { transform: scale(1.08); }
+.theme-toggle svg { width: 18px; height: 18px; }
+
+h2 { margin-top: 0; font-size: 18px; }
+.hint { color: var(--text-muted); font-size: 13px; margin-top: -8px; margin-bottom: 12px; }
+
+.pipeline {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 12px 4px 20px 4px;
+}
+
+/* Each stage is now a real <button> so it's clickable forever, not just during animation.
+   IMPORTANT: de-emphasis for completed/upcoming stages must never fade the *text* to
+   near-illegibility — only the box background/border dims. Text color stays full-contrast
+   (var(--text)) in every state; this was a real legibility bug in an earlier version that
+   used blanket opacity on the whole button, which washed out labels and data in dark mode. */
+.stage {
+  flex: 0 0 auto;
+  width: 130px;
+  text-align: center;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-family: inherit;
+  transition: transform 150ms var(--ease-out);
+}
+.stage:hover { transform: scale(1.03); }
+.stage:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
+
+.stage-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 700;
+  margin-bottom: 6px;
+  height: 28px;
+}
+.stage.current .stage-label { color: var(--primary); }
+
+.stage-box {
+  background: var(--bg-muted);
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  padding: 10px;
+  min-height: 90px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  color: var(--text);
+  transition: border-color 300ms, background 300ms, opacity 300ms;
+}
+.stage.current .stage-box { border-color: var(--primary); background: var(--explain-bg); opacity: 1; }
+.stage.completed .stage-box { border-color: var(--success); opacity: 0.85; }
+.stage.upcoming .stage-box { opacity: 0.75; }
+
+.chunk-box {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--border);
+  border-radius: 6px;
+  padding: 4px 6px;
+  font-size: 10px;
+  width: 100%;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.chunk-box.cat-1 { border-left-color: var(--cat-1); }
+.chunk-box.cat-2 { border-left-color: var(--cat-2); }
+.chunk-box.cat-3 { border-left-color: var(--cat-3); }
+.cat-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.cat-1 .cat-dot, .cat-dot.cat-1 { background: var(--cat-1); }
+.cat-2 .cat-dot, .cat-dot.cat-2 { background: var(--cat-2); }
+.cat-3 .cat-dot, .cat-dot.cat-3 { background: var(--cat-3); }
+
+svg { overflow: visible; }
+.dot-decoy { fill: var(--frozen); }
+.dot-real { fill: var(--primary); }
+.dot-real.cat-1 { fill: var(--cat-1); }
+.dot-real.cat-2 { fill: var(--cat-2); }
+.dot-real.cat-3 { fill: var(--cat-3); }
+.dot-query { fill: var(--active); }
+.highlight-ring { fill: none; stroke: var(--success); stroke-width: 2; opacity: 0; transition: opacity 300ms, r 400ms; }
+
+.prompt-box, .answer-box { font-size: 10px; text-align: left; background: var(--card-bg); border: 1px solid var(--border); border-radius: 6px; padding: 6px; width: 100%; color: var(--text); }
+.cat-chip { font-weight: 700; padding: 1px 5px; border-radius: 4px; }
+.cat-chip.cat-1 { background: var(--cat-1); color: #fff; }
+.cat-chip.cat-2 { background: var(--cat-2); color: #fff; }
+.cat-chip.cat-3 { background: var(--cat-3); color: #fff; }
+
+/* Legend: a static key mapping every dot/color/shape used in this module's
+   diagram to what it represents — required per 00-design-system.md whenever
+   a visual uses more than one non-obvious color/shape encoding. Sits directly
+   under the diagram, above the controls. */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin: 4px 0 16px;
+  padding: 10px 14px;
+  background: var(--bg-muted);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.legend-item { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+.legend-swatch { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.legend-swatch.ring { background: none; border: 2px solid var(--success); width: 8px; height: 8px; }
+.legend-swatch.decoy { background: var(--frozen); }
+.legend-swatch.query { background: var(--active); }
+.legend-swatch.cat-1 { background: var(--cat-1); }
+.legend-swatch.cat-2 { background: var(--cat-2); }
+.legend-swatch.cat-3 { background: var(--cat-3); }
+
+.scrubber-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+  padding: 12px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.scrubber-row label { font-weight: 600; font-size: 13px; min-width: 45px; }
+.scrubber-row input[type="range"] { accent-color: var(--primary); cursor: pointer; flex: 1; }
+
+.readout {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--primary);
+  min-width: 48px;
+  text-align: right;
+  transition: color 300ms;
+}
+
+.controls { margin-top: 16px; display: flex; gap: 12px; flex-wrap: wrap; }
+
+.btn-primary, .btn-secondary {
+  border-radius: 8px;
+  padding: 10px 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 150ms var(--ease-out), background 150ms;
+  border: none;
+}
+.btn-primary { background: var(--primary); color: white; }
+.btn-primary:hover { transform: scale(1.03); background: #4338ca; }
+.btn-secondary { background: transparent; color: var(--text-muted); border: 1px solid var(--border); }
+.btn-secondary:hover { transform: scale(1.03); background: var(--bg); }
+.btn-secondary:disabled, .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+.steps-panel {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 16px 12px 32px;
+  margin-bottom: 12px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+.steps-panel li { margin: 2px 0; }
+.steps-panel strong { color: var(--text); }
+
+.explain-panel {
+  background: var(--explain-bg);
+  border-left: 3px solid var(--primary);
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-top: 16px;
+  font-size: 14px;
+  color: var(--text);
+  min-height: 20px;
+  transition: opacity 200ms;
+}
+
+.caption { color: var(--text-muted); font-size: 14px; font-style: italic; margin-top: 16px; opacity: 0; transition: opacity 400ms var(--ease-out); }
+.caption.visible { opacity: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}

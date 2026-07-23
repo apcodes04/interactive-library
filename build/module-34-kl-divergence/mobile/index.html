@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Module 34 - KL Divergence (Mobile)</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="card">
+    <button class="theme-toggle" aria-label="Toggle theme">
+      <svg id="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+      <svg id="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+    <div class="steps-panel">
+      <h3>Steps to interact</h3>
+      <ol>
+        <li>Drag any bar in the Q chart.</li>
+        <li>Watch the KL divergence readout change.</li>
+        <li>Click "Snap Q to match P" to see it hit exactly zero.</li>
+      </ol>
+    </div>
+
+    <div class="chart-section">
+      <h4>Distribution P (True)</h4>
+      <div class="bar-chart" id="chart-p">
+        <!-- Bars injected by JS -->
+      </div>
+    </div>
+
+    <div class="chart-section">
+      <h4>Distribution Q (Approximation)</h4>
+      <div class="bar-chart draggable" id="chart-q">
+        <!-- Bars injected by JS -->
+      </div>
+    </div>
+
+    <div class="divergence-readout" id="kl-readout">
+      KL(P || Q) = <span id="kl-value">0.000</span>
+    </div>
+
+    <button class="btn-secondary" id="btn-snap">Snap Q to match P</button>
+
+    <div class="explain-panel" id="explain">Interact with Q to see how it differs from P.</div>
+    <div class="caption" id="caption">Drag any bar in Q away from P and watch the number climb immediately — it only ever returns to exactly zero when the two distributions are identical.</div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>

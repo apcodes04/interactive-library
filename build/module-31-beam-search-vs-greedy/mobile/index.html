@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Module 31 - Beam Search vs Greedy (Mobile)</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="card">
+    <button class="theme-toggle" aria-label="Toggle theme">
+      <svg id="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+      <svg id="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+    
+    <div class="panels-container">
+      <div class="panel">
+        <h4>Greedy</h4>
+        <div class="tree-vis" id="greedy-tree">
+          <div class="node n-root">Root</div>
+          
+          <div class="node n-a d1">A (.40)</div>
+          <div class="node n-b d1 faded">B (.35)</div>
+          <div class="node n-c d1 faded">C (.25)</div>
+          
+          <div class="node n-a1 d2 faded">A1</div>
+          <div class="node n-a2 d2">A2 (.70)</div>
+          
+          <div class="node n-a2a d3">A2a (.50)</div>
+          
+          <div class="readout readout-greedy" id="readout-greedy" style="display:none; color:var(--danger)">0.140</div>
+        </div>
+      </div>
+      <div class="panel">
+        <h4>Beam (k=2)</h4>
+        <div class="tree-vis" id="beam-tree">
+          <div class="node n-root">Root</div>
+          
+          <div class="node n-a d1">A (.40)</div>
+          <div class="node n-b d1">B (.35)</div>
+          <div class="node n-c d1 faded">C (.25)</div>
+          
+          <div class="node n-a1 d2 faded">A1</div>
+          <div class="node n-a2 d2">A2 (.28)</div>
+          <div class="node n-b1 d2">B1 (.315)</div>
+          <div class="node n-b2 d2 faded">B2</div>
+          
+          <div class="node n-a2a d3 faded">A2a</div>
+          <div class="node n-b1a d3">B1a (.189)</div>
+          
+          <div class="readout readout-beam" id="readout-beam" style="display:none; color:var(--success)">0.189</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scrubber-container">
+      <div class="scrubber-labels">
+        <button class="depth-btn" data-depth="0">0</button>
+        <button class="depth-btn" data-depth="1">1</button>
+        <button class="depth-btn" data-depth="2">2</button>
+        <button class="depth-btn" data-depth="3">3</button>
+      </div>
+      <input type="range" id="scrubber" min="0" max="3" step="1" value="0">
+      <div class="scrubber-controls">
+        <button class="btn-secondary" id="btn-back">◀</button>
+        <button class="btn-primary" id="btn-next">Next ▶</button>
+        <button class="btn-reset" id="btn-reset">Reset</button>
+      </div>
+    </div>
+    
+    <div class="steps-panel">
+      <h3>Steps to interact</h3>
+      <ol>
+        <li>Click a depth indicator, or drag the scrubber.</li>
+        <li>Use "Next ▶" / "◀" to step through.</li>
+        <li>Compare the final readouts at depth 3.</li>
+      </ol>
+    </div>
+
+    <div class="caption" id="caption">Greedy grabbed the better-looking option first — and still ended up with the worse full sentence. Beam search kept a second option alive long enough to prove it was better.</div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>

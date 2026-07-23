@@ -1,0 +1,35 @@
+:root {
+  --bg: #ffffff;
+  --text: #333333;
+  --primary: #2563eb;
+  --frozen: #e5e7eb;
+}
+[data-theme="dark"] {
+  --bg: #1e1e1e;
+  --text: #f9fafb;
+  --frozen: #374151;
+}
+body { background: var(--bg); color: var(--text); font-family: sans-serif; padding: 10px; margin: 0; transition: background 0.3s, color 0.3s; }
+.card { display: flex; flex-direction: column; gap: 15px; position: relative; }
+.theme-toggle { position: absolute; top: 0; right: 0; background: none; border: none; cursor: pointer; color: var(--text); width: 24px; height: 24px; }
+.steps-panel { background: var(--frozen); padding: 10px; border-radius: 4px; font-size: 0.9em; margin-top: 30px; }
+.controls { margin-bottom: 10px; }
+.toggle-label { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+.toggle-label input { display: none; }
+.toggle-slider { width: 40px; height: 20px; background: var(--frozen); border-radius: 20px; position: relative; transition: 0.3s; }
+.toggle-slider::after { content: ''; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; background: white; border-radius: 50%; transition: 0.3s; }
+.toggle-label input:checked + .toggle-slider { background: var(--primary); }
+.toggle-label input:checked + .toggle-slider::after { transform: translateX(20px); }
+
+.table-container { overflow-x: auto; }
+table.comparison-table { width: 100%; border-collapse: collapse; font-size: 0.85em; }
+table.comparison-table th, table.comparison-table td { border: 1px solid var(--frozen); padding: 8px; text-align: left; transition: opacity 0.3s, color 0.3s; }
+table.comparison-table th { background: var(--frozen); }
+.unconfirmed { transition: opacity 0.3s; }
+.facts-only .unconfirmed { opacity: 0.4; color: var(--frozen); }
+
+.chart-container { position: relative; height: 150px; }
+
+.explain-panel { font-size: 0.9em; }
+.caption { font-style: italic; opacity: 0; transition: opacity 0.5s; font-size: 0.9em; }
+.caption.visible { opacity: 1; }

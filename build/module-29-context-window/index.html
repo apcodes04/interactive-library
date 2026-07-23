@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 29 - Context Window</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="card">
+        <button class="theme-toggle" aria-label="Toggle theme">
+            <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+            <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+        <div class="steps-panel">
+            <ol>
+                <li>Drag either edge of the window rectangle to resize it.</li>
+                <li>Drag the rectangle itself to slide it.</li>
+                <li>Watch which tokens fade in and out.</li>
+            </ol>
+        </div>
+        
+        <div class="explain-panel" id="explain">
+            Window size: <span class="readout" id="window-size">20</span> tokens | Covering <span class="readout" id="window-range">T1–T20</span>
+        </div>
+        
+        <div class="demo-container">
+            <div class="strip-container" id="strip-container">
+                <div class="tokens-row" id="tokens-row">
+                    <!-- Tokens will be generated here -->
+                </div>
+                
+                <div class="heatmap-bar" id="heatmap-bar">
+                    <!-- Heatmap will be updated here -->
+                </div>
+                
+                <!-- Draggable overlay -->
+                <div class="window-overlay" id="window-overlay">
+                    <div class="resize-handle left" id="handle-left"></div>
+                    <div class="resize-handle right" id="handle-right"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="caption">Anything outside this rectangle doesn't exist to the model right now — and even inside it, the edges get attended to more reliably than the middle.</div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

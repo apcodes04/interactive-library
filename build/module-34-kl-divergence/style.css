@@ -1,0 +1,35 @@
+:root {
+  --bg: #ffffff;
+  --text: #333333;
+  --primary: #2563eb;
+  --frozen: #e5e7eb;
+  --active: #d97706;
+  --success: #10b981;
+  --danger: #ef4444;
+}
+[data-theme="dark"] {
+  --bg: #1e1e1e;
+  --text: #f9fafb;
+  --frozen: #374151;
+}
+body { background: var(--bg); color: var(--text); font-family: sans-serif; padding: 20px; transition: background 0.3s, color 0.3s; }
+.card { border: 1px solid var(--frozen); border-radius: 8px; padding: 20px; max-width: 600px; margin: 0 auto; position: relative; }
+.theme-toggle { position: absolute; top: 20px; right: 20px; background: none; border: none; cursor: pointer; color: var(--text); width: 24px; height: 24px; }
+.steps-panel { background: var(--frozen); padding: 10px; border-radius: 4px; margin-bottom: 20px; }
+
+.chart-section { margin-bottom: 20px; }
+.chart-section h4 { margin: 0 0 10px 0; }
+.bar-chart { display: flex; align-items: flex-end; gap: 10px; height: 150px; padding: 10px; border-bottom: 2px solid var(--frozen); background: rgba(0,0,0,0.02); position: relative; }
+.bar { width: 40px; background: var(--primary); border-radius: 4px 4px 0 0; position: relative; transition: height 0.1s; }
+.chart-p .bar { background: var(--primary); pointer-events: none; }
+.chart-q .bar { background: var(--active); cursor: ns-resize; }
+.bar-label { position: absolute; bottom: -25px; left: 50%; transform: translateX(-50%); font-size: 0.8em; }
+
+.divergence-readout { font-size: 1.5em; font-weight: bold; margin: 20px 0; transition: color 0.3s; }
+
+.btn-secondary { background: var(--frozen); color: var(--text); border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+.btn-secondary:hover { filter: brightness(0.9); }
+
+.explain-panel { font-size: 0.9em; margin-top: 20px; margin-bottom: 10px; }
+.caption { font-style: italic; opacity: 0; transition: opacity 0.5s; font-size: 0.9em; }
+.caption.visible { opacity: 1; }

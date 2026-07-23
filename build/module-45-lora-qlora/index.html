@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Module 45</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+  <div class="app-container">
+    <div class="header-row">
+      <h2>LoRA and QLoRA</h2>
+      <button class="theme-toggle" aria-label="Toggle dark mode">
+        <svg id="icon-sun" viewBox="0 0 24 24" width="24" height="24" fill="currentColor" style="display:none;"><circle cx="12" cy="12" r="5"/><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72 1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <svg id="icon-moon" viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+    
+    <div class="steps-panel">
+      <h3>Steps to interact</h3>
+      <ol>
+<li>Click "Compute update".</li><li>Watch A and B combine into the delta grid added to W.</li><li>Toggle "QLoRA view" to see the quantized version.</li>
+      </ol>
+    </div>
+
+    <div class="card">
+<div class="controls-row" style="margin-bottom: 20px; display:flex; gap:10px; align-items:center;">
+         <button class="btn-primary" id="btn-compute">Compute update</button>
+         <label style="cursor:pointer; font-weight:bold;"><input type="checkbox" id="qlora-toggle"> QLoRA view</label>
+       </div>
+       <div id="matrix-container" style="display:flex; align-items:center; gap:20px; min-height:200px; position:relative;">
+         <div style="text-align:center;"><div style="margin-bottom:5px;">W (8x8)</div><svg id="svg-w" width="160" height="160"></svg></div>
+         <div id="plus-sign" style="font-size:24px; font-weight:bold; opacity:0;">+</div>
+         <div id="delta-container" style="text-align:center; opacity:0; width:160px;"><div style="margin-bottom:5px;">ΔW = B×A</div><svg id="svg-delta" width="160" height="160"></svg></div>
+         <div id="anim-ab" style="display:flex; align-items:center; gap:10px;">
+           <div style="text-align:center;"><div style="margin-bottom:5px;">B (8x2)</div><svg id="svg-b" width="40" height="160"></svg></div>
+           <div style="font-size:20px;">×</div>
+           <div style="text-align:center;"><div style="margin-bottom:5px;">A (2x8)</div><svg id="svg-a" width="160" height="40"></svg></div>
+         </div>
+       </div>
+    </div>
+
+    <div class="explain-panel" id="explain">W is frozen. A and B are small trainable matrices.</div>
+
+    <div class="caption" id="caption">W never changes color or texture in the top state — it's completely frozen. Only these two thin strips are ever actually trained.</div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>

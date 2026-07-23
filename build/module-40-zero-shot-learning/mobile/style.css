@@ -1,0 +1,35 @@
+:root {
+  --bg: #ffffff;
+  --text: #333333;
+  --primary: #2563eb;
+  --frozen: #e5e7eb;
+  --success: #10b981;
+}
+[data-theme="dark"] {
+  --bg: #1e1e1e;
+  --text: #f9fafb;
+  --frozen: #374151;
+}
+body { background: var(--bg); color: var(--text); font-family: sans-serif; padding: 10px; margin: 0; transition: background 0.3s, color 0.3s; }
+.card { display: flex; flex-direction: column; gap: 15px; position: relative; }
+.theme-toggle { position: absolute; top: 0; right: 0; background: none; border: none; cursor: pointer; color: var(--text); width: 24px; height: 24px; }
+.steps-panel { background: var(--frozen); padding: 10px; border-radius: 4px; font-size: 0.9em; margin-top: 30px; }
+.controls { margin-bottom: 10px; }
+.toggle-label { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+.toggle-label input { display: none; }
+.toggle-slider { width: 40px; height: 20px; background: var(--frozen); border-radius: 20px; position: relative; transition: 0.3s; }
+.toggle-slider::after { content: ''; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; background: white; border-radius: 50%; transition: 0.3s; }
+.toggle-label input:checked + .toggle-slider { background: var(--primary); }
+.toggle-label input:checked + .toggle-slider::after { transform: translateX(20px); }
+
+.prompt-container { border: 1px solid var(--frozen); border-radius: 8px; padding: 15px; overflow: hidden; }
+.examples-wrapper { max-height: 0; opacity: 0; transition: max-height 0.3s ease-out, opacity 0.3s ease-out; margin-bottom: 0; overflow: hidden; }
+.examples-wrapper.open { max-height: 250px; opacity: 1; margin-bottom: 15px; }
+.example-card { background: var(--frozen); padding: 10px; border-radius: 4px; margin-bottom: 10px; font-size: 0.9em; }
+.example-card:last-child { margin-bottom: 0; }
+.instruction-box { font-weight: bold; }
+.result-badge { display: inline-block; background: var(--success); color: white; padding: 8px 16px; border-radius: 20px; font-weight: bold; text-align: center; }
+
+.explain-panel { font-size: 0.9em; }
+.caption { font-style: italic; opacity: 0; transition: opacity 0.5s; font-size: 0.9em; }
+.caption.visible { opacity: 1; }

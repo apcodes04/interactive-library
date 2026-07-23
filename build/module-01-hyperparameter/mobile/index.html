@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Module 1 - Hyperparameter (Mobile)</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+  <div class="card">
+    <button class="theme-toggle" aria-label="Toggle theme">
+      <svg id="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+      <svg id="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+    <div class="steps-panel">
+      <h3>Steps to interact</h3>
+      <ol>
+        <li>Drag the "Learning rate" slider.</li>
+        <li>Tap "Train."</li>
+        <li>Watch the loss curve and decision boundary respond.</li>
+      </ol>
+    </div>
+    
+    <div class="layout-split">
+      <div>
+        <svg id="plot-svg"></svg>
+        <div class="legend">
+          <div class="legend-item"><div class="legend-color" style="background:var(--primary)"></div>Class A</div>
+          <div class="legend-item"><div class="legend-color" style="background:var(--danger)"></div>Class B</div>
+        </div>
+      </div>
+      <div>
+        <svg id="loss-svg"></svg>
+      </div>
+    </div>
+    
+    <div class="explain-panel" id="explain">Adjust the learning rate and tap Train to see how it affects the model's convergence.</div>
+    
+    <div class="controls">
+      <label for="lr-slider">Learning rate: <span class="readout" id="lr-readout">0.1</span></label>
+      <input type="range" id="lr-slider" min="-3" max="0.301" step="0.01" value="-1">
+      <button class="btn-primary" id="btn-train">Train</button>
+    </div>
+    
+    <div class="caption" id="caption">The learning rate alone decided whether training converged smoothly, crawled, or diverged — nothing else in this chart changed.</div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>

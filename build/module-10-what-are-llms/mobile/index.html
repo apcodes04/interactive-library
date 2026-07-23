@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Module 10 - What Are LLMs (Mobile)</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="card">
+    <button class="theme-toggle" aria-label="Toggle theme">
+      <svg id="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+      <svg id="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+    <div class="steps-panel">
+      <h3>Steps to interact</h3>
+      <ol>
+        <li>Drag the "Model size" slider.</li>
+        <li>Watch the dot-grid grow.</li>
+        <li>Watch capabilities unlock on the checklist as you cross each threshold.</li>
+      </ol>
+    </div>
+    
+    <div class="layout-stack">
+      <div class="model-visualizer">
+        <div class="dot-grid" id="dot-grid"></div>
+        <div class="slider-container">
+          <label for="size-slider">Model size: <span id="size-readout">1</span></label>
+          <input type="range" id="size-slider" min="1" max="100" value="1">
+        </div>
+      </div>
+      
+      <div class="explain-panel" id="explain">At low scale, the model has few parameters and limited capabilities.</div>
+      
+      <div class="checklist">
+        <h3>Emergent Capabilities</h3>
+        <div class="check-item frozen" data-threshold="10">
+          <div class="icon"></div>
+          <div class="text">Basic text completion</div>
+        </div>
+        <div class="check-item frozen" data-threshold="35">
+          <div class="icon"></div>
+          <div class="text">Coherent multi-turn chat</div>
+        </div>
+        <div class="check-item frozen" data-threshold="65">
+          <div class="icon"></div>
+          <div class="text">Multi-step reasoning</div>
+        </div>
+        <div class="check-item frozen" data-threshold="90">
+          <div class="icon"></div>
+          <div class="text">Tool use / function calling</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="caption" id="caption">Capabilities like reasoning and tool use don't appear gradually — drag past each threshold and notice they switch on all at once, past a certain scale.</div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>

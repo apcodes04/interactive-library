@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Module 41</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+  <div class="app-container">
+    <div class="header-row">
+      <h2>Few-Shot Learning</h2>
+      <button class="theme-toggle" aria-label="Toggle dark mode">
+        <svg id="icon-sun" viewBox="0 0 24 24" width="24" height="24" fill="currentColor" style="display:none;"><circle cx="12" cy="12" r="5"/><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72 1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <svg id="icon-moon" viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+    
+    <div class="steps-panel">
+      <h3>Steps to interact</h3>
+      <ol>
+<li>Click "+ Add example" repeatedly.</li><li>Watch the confidence meter rise, then plateau.</li><li>Click "Remove example" to reverse it.</li>
+      </ol>
+    </div>
+
+    <div class="card">
+<div id="example-container"></div>
+      <div class="example-box" id="prompt-box"><strong>Prompt:</strong> Translate English to French.</div>
+      <div class="btn-row" style="margin:10px 0;">
+        <button class="btn-primary" id="btn-add">+ Add example</button>
+        <button class="btn-secondary" id="btn-remove" disabled>Remove example</button>
+      </div>
+      <div>Confidence: <span id="conf-label">40%</span></div>
+      <div class="meter-bg"><div class="meter-fill" id="meter-fill" style="width:40%;"></div></div>
+    </div>
+
+    <div class="explain-panel" id="explain">Current examples: 0. Confidence is low without examples.</div>
+
+    <div class="caption" id="caption">Notice the meter barely moves after the third example — this is the diminishing-returns point described in this module, made visible.</div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>

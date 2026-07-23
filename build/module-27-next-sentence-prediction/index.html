@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 27 - Next Sentence Prediction</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="card">
+        <button class="theme-toggle" aria-label="Toggle theme">
+            <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+            <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+        <div class="steps-panel">
+            <ol>
+                <li>Click "Shuffle pairing."</li>
+                <li>Read the new confidence gauge and IsNext/NotNext label.</li>
+            </ol>
+        </div>
+        
+        <div class="explain-panel" id="explain">Sentence pair represents a genuine consecutive sequence. The model is highly confident it's a match.</div>
+        
+        <div class="demo-container">
+            <div class="sentences">
+                <div class="sentence-card">
+                    <span class="label">Sentence A</span>
+                    <p>"She opened the door."</p>
+                </div>
+                <div class="sentence-card" id="sentence-b-card">
+                    <span class="label">Sentence B</span>
+                    <p id="sentence-b-text">"Cold air rushed in."</p>
+                </div>
+            </div>
+            
+            <div class="gauge-container">
+                <svg viewBox="0 0 120 70" class="gauge-svg">
+                    <!-- Background arc -->
+                    <path d="M 10 60 A 50 50 0 0 1 110 60" fill="none" class="gauge-bg" stroke-width="12" stroke-linecap="round"/>
+                    <!-- Foreground arc -->
+                    <path d="M 10 60 A 50 50 0 0 1 110 60" fill="none" class="gauge-fg" stroke-width="12" stroke-linecap="round" stroke-dasharray="157" stroke-dashoffset="12.56"/>
+                </svg>
+                <div class="gauge-readout">
+                    <div class="percent readout" id="gauge-val">92%</div>
+                    <div class="status" id="gauge-status">
+                        <span id="status-icon">✓</span> <span id="status-text">IsNext</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls-row">
+            <button id="btn-shuffle" class="btn btn-primary">Shuffle pairing</button>
+        </div>
+        
+        <div class="caption">Swap in an unrelated second sentence and the model's confidence collapses immediately — that contrast is the entire training signal NSP relies on.</div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

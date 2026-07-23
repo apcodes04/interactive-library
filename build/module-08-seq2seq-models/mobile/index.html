@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Module 8 - Seq2Seq Models (Mobile)</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="card">
+    <button class="theme-toggle" aria-label="Toggle theme">
+      <svg id="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+      <svg id="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+    <div class="steps-panel">
+      <h3>Steps to interact</h3>
+      <ol>
+        <li>Tap "Decode next word" to reveal one output word at a time.</li>
+        <li>Tap "◀ Back" or drag the scrubber to review earlier steps.</li>
+      </ol>
+    </div>
+
+    <!-- Stacking order: diagram, legend (none), scrubber, explain, controls, caption -->
+    <div class="diagram-area" id="diagram-area">
+      <div class="row" id="input-row">
+        <div class="word-box in-box" id="in-0">I</div>
+        <div class="word-box in-box" id="in-1">am</div>
+        <div class="word-box in-box" id="in-2">very</div>
+        <div class="word-box in-box" id="in-3">tired</div>
+      </div>
+      <div class="center-row">
+        <div class="context-vector" id="context-vector">Context vector</div>
+      </div>
+      <div class="row" id="output-row">
+        <div class="word-box out-box" id="out-1">Je</div>
+        <div class="word-box out-box" id="out-2">suis</div>
+        <div class="word-box out-box" id="out-3">très</div>
+        <div class="word-box out-box" id="out-4">fatigué</div>
+      </div>
+    </div>
+    
+    <div class="stage-strip" id="stage-strip"></div>
+    
+    <div class="controls-row">
+      <input type="range" id="scrubber" min="0" max="4" step="1" value="0" disabled>
+    </div>
+
+    <div class="explain-panel" id="explain">Encoding input sequence...</div>
+    
+    <div class="controls-stack">
+      <button class="btn-primary" id="btn-next" disabled>Decode next word ▶</button>
+      <button class="btn-secondary" id="btn-prev" disabled>◀ Back</button>
+      <button class="btn-reset" id="btn-reset" disabled>Reset</button>
+    </div>
+    
+    <div class="caption" id="caption">Every output word had to come from that same one fixed-size circle — notice it never grew, no matter how much information passed through it. That bottleneck is exactly what Transformers removed.</div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
