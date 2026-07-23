@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Overfitting & Bias-Variance | AcadByte Explored Visually</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-dark: #090d16;
+      --panel-bg: rgba(17, 24, 39, 0.85);
+      --panel-border: rgba(255, 255, 255, 0.1);
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --accent-train: #38bdf8;
+      --accent-test: #f59e0b;
+      --accent-curve: #ec4899;
+      --accent-good: #10b981;
+      --grid-line: rgba(255, 255, 255, 0.07);
+      --grid-axis: rgba(255, 255, 255, 0.3);
+      --font-main: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'Fira Code', monospace;
+    }
+
+    .light-theme {
+      --bg-dark: #f8fafc;
+      --panel-bg: rgba(255, 255, 255, 0.9);
+      --panel-border: rgba(0, 0, 0, 0.1);
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --accent-train: #0284c7;
+      --accent-test: #d97706;
+      --accent-curve: #db2777;
+      --accent-good: #059669;
+      --grid-line: rgba(0, 0, 0, 0.07);
+      --grid-axis: rgba(0, 0, 0, 0.3);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+    body { font-family: var(--font-main); background-color: var(--bg-dark); color: var(--text-main); height: 100vh; overflow: hidden; display: flex; transition: all 0.3s ease; }
+    #app-container { display: flex; width: 100vw; height: 100vh; }
+
+    #canvas-container { flex: 1; position: relative; height: 100%; background: radial-gradient(circle at center, rgba(30, 41, 59, 0.3) 0%, transparent 80%); }
+    canvas { width: 100%; height: 100%; display: block; cursor: crosshair; }
+
+    .floating-overlay { position: absolute; top: 16px; left: 16px; display: flex; gap: 10px; z-index: 10; flex-wrap: wrap; }
+    .icon-btn {
+      background: var(--panel-bg); border: 1px solid var(--panel-border); color: var(--text-main);
+      padding: 8px 14px; border-radius: 8px; font-size: 0.85rem; font-weight: 500; cursor: pointer;
+      backdrop-filter: blur(12px); display: flex; align-items: center; gap: 6px; transition: all 0.2s ease;
+      text-decoration: none; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .icon-btn:hover { background: rgba(255, 255, 255, 0.15); border-color: rgba(255, 255, 255, 0.3); transform: translateY(-1px); }
+    .icon-btn.active { background: var(--accent-train); color: #000; border-color: var(--accent-train); font-weight: 600; }
+
+    #fit-status-badge {
+      position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%);
+      padding: 10px 24px; border-radius: 30px; font-weight: 700; font-size: 0.95rem;
+      backdrop-filter: blur(10px); display: flex; align-items: center; gap: 10px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3); transition: all 0.3s ease; z-index: 20;
+    }
+    .status-underfit { background: linear-gradient(135deg, rgba(239, 68, 68, 0.9), rgba(185, 28, 28, 0.9)); color: #fff; }
+    .status-optimal { background: linear-gradient(135deg, rgba(16, 185, 129, 0.9), rgba(4, 120, 87, 0.9)); color: #fff; }
+    .status-overfit { background: linear-gradient(135deg, rgba(245, 158, 11, 0.95), rgba(217, 119, 6, 0.95)); color: #fff; }
+
+    #sidebar { width: 420px; height: 100%; background: var(--panel-bg); border-left: 1px solid var(--panel-border); backdrop-filter: blur(20px); display: flex; flex-direction: column; overflow-y: auto; z-index: 10; }
+    .sidebar-header { padding: 24px; border-bottom: 1px solid var(--panel-border); }
+    .sidebar-header h1 { font-size: 1.35rem; font-weight: 700; margin-bottom: 4px; }
+    .sidebar-header p { font-size: 0.85rem; color: var(--text-muted); }
+
+    .section { padding: 20px 24px; border-bottom: 1px solid var(--panel-border); }
+    .section-title { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); font-weight: 600; margin-bottom: 14px; }
+
+    .slider-group { margin-bottom: 16px; }
+    .slider-header { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 6px; }
+    .slider-header span:last-child { font-family: var(--font-mono); font-weight: 600; color: var(--accent-train); }
+    input[type="range"] { width: 100%; accent-color: var(--accent-train); cursor: pointer; }
+
+    .presets-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 16px; }
+    .chip-btn { background: rgba(255, 255, 255, 0.04); border: 1px solid var(--panel-border); color: var(--text-main); padding: 8px 12px; border-radius: 6px; font-size: 0.8rem; cursor: pointer; text-align: left; }
+    .chip-btn:hover { background: rgba(255, 255, 255, 0.1); }
+
+    .hud-card { background: rgba(0, 0, 0, 0.25); border-radius: 10px; padding: 14px; border: 1px solid var(--panel-border); margin-bottom: 12px; }
+    .hud-row { display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; margin-bottom: 8px; }
+    .hud-row:last-child { margin-bottom: 0; }
+    .hud-label { color: var(--text-muted); }
+    .hud-value { font-family: var(--font-mono); font-weight: 600; }
+
+    .explainer-box { font-size: 0.85rem; line-height: 1.5; color: var(--text-muted); background: rgba(255, 255, 255, 0.02); padding: 14px; border-radius: 8px; border-left: 3px solid var(--accent-curve); }
+    #sidebar::-webkit-scrollbar { width: 6px; }
+    #sidebar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 3px; }
+
+    @media (max-width: 900px) {
+      #app-container { flex-direction: column; }
+      #sidebar { width: 100vw; height: 50vh; }
+      #canvas-container { height: 50vh; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="app-container">
+    <div id="canvas-container">
+      <canvas id="simCanvas"></canvas>
+
+      <div class="floating-overlay">
+        <a href="index.html" class="icon-btn" title="Back to Hub">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Hub
+        </a>
+        <button class="icon-btn" id="btn-regen">Regenerate Data</button>
+        <button class="icon-btn active" id="btn-split">Train/Test Split</button>
+        <button class="icon-btn active" id="btn-residuals">Residual Lines</button>
+        <button class="icon-btn" id="btn-theme">Theme</button>
+      </div>
+
+      <div id="fit-status-badge" class="status-optimal">
+        <span id="badge-title">OPTIMAL GENERALIZATION</span>
+        <span id="badge-sub" style="font-size: 0.8rem; opacity: 0.9;">(Degree 2)</span>
+      </div>
+    </div>
+
+    <div id="sidebar">
+      <div class="sidebar-header">
+        <h1>Overfitting & Bias-Variance</h1>
+        <p>Interactive Polynomial Regression Explorable</p>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Model Complexity</div>
+        <div class="slider-group">
+          <div class="slider-header">
+            <span>Polynomial Degree (Model Complexity)</span>
+            <span id="val-degree">2</span>
+          </div>
+          <input type="range" id="slide-degree" min="1" max="10" step="1" value="2">
+        </div>
+        
+        <div class="slider-group">
+          <div class="slider-header">
+            <span>Data Noise Level</span>
+            <span id="val-noise">35%</span>
+          </div>
+          <input type="range" id="slide-noise" min="0" max="100" step="5" value="35">
+        </div>
+
+        <div class="slider-group">
+          <div class="slider-header">
+            <span>Dataset Size (Points)</span>
+            <span id="val-npoints">25</span>
+          </div>
+          <input type="range" id="slide-npoints" min="8" max="50" step="1" value="25">
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Interactive Scenarios</div>
+        <div class="presets-grid">
+          <button class="chip-btn" id="pre-underfit">Underfitting (Degree 1)</button>
+          <button class="chip-btn" id="pre-optimal">Optimal (Degree 2)</button>
+          <button class="chip-btn" id="pre-overfit">Overfitting (Degree 9)</button>
+          <button class="chip-btn" id="pre-scarce">Data Scarcity (N=6, Deg=5)</button>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Live Loss Metrics</div>
+        <div class="hud-card">
+          <div class="hud-row">
+            <span class="hud-label">Training Error (MSE)</span>
+            <span class="hud-value" id="hud-train-mse" style="color: var(--accent-train);">0.0152</span>
+          </div>
+          <div class="hud-row">
+            <span class="hud-label">Testing Error (MSE)</span>
+            <span class="hud-value" id="hud-test-mse" style="color: var(--accent-test);">0.0189</span>
+          </div>
+          <div class="hud-row">
+            <span class="hud-label">Generalization Gap</span>
+            <span class="hud-value" id="hud-gap">+0.0037</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Intuition</div>
+        <div class="explainer-box">
+          <p><strong>Underfitting (High Bias):</strong> Degree 1 curve is too rigid, missing both training & test trends.</p>
+          <p style="margin-top: 8px;"><strong>Overfitting (High Variance):</strong> High degree polynomials memorize noisy training points perfectly, causing wild oscillations that ruin predictions on unseen test data!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // -------------------------------------------------------------
+    // STATE & POLYNOMIAL REGRESSION MATH ENGINE
+    // -------------------------------------------------------------
+    const state = {
+      degree: 2,
+      noise: 0.35,
+      numPoints: 25,
+      showSplit: true,
+      showResiduals: true,
+      draggedIndex: -1,
+      points: [], // {x, y, isTest}
+      coeffs: [],
+      trainMSE: 0,
+      testMSE: 0
+    };
+
+    function generateDataset() {
+      state.points = [];
+      const n = state.numPoints;
+      for (let i = 0; i < n; i++) {
+        const x = (i / (n - 1)) * 1.8 - 0.9; // x in [-0.9, 0.9]
+        // Underlying function: y = 0.5 * x^2 - 0.3 * x + 0.1 + noise
+        const trueY = 0.6 * x * x - 0.3 * x - 0.2;
+        const gaussianNoise = (Math.random() + Math.random() - 1) * state.noise * 0.4;
+        const y = Math.max(-0.85, Math.min(0.85, trueY + gaussianNoise));
+        const isTest = i % 3 === 0; // ~33% test split
+        state.points.push({ x, y, isTest });
+      }
+      fitPolynomial();
+    }
+
+    // Least Squares Polynomial Regression with L2 Ridge Penalty
+    function fitPolynomial() {
+      const deg = state.degree;
+      const trainPoints = state.showSplit ? state.points.filter(p => !p.isTest) : state.points;
+      if (trainPoints.length === 0) return;
+
+      // Build Vandermonde matrix X and target y
+      const N = trainPoints.length;
+      const M = deg + 1;
+
+      // X^T * X matrix (M x M)
+      const XtX = Array.from({ length: M }, () => new Float64Array(M));
+      const Xty = new Float64Array(M);
+
+      for (let i = 0; i < N; i++) {
+        const px = trainPoints[i].x;
+        const py = trainPoints[i].y;
+        const powers = new Float64Array(2 * deg + 1);
+        powers[0] = 1.0;
+        for (let k = 1; k <= 2 * deg; k++) powers[k] = powers[k - 1] * px;
+
+        for (let r = 0; r < M; r++) {
+          for (let c = 0; c < M; c++) {
+            XtX[r][c] += powers[r + c];
+          }
+          Xty[r] += powers[r] * py;
+        }
+      }
+
+      // Small L2 Ridge Regularization for numerical stability at high degrees
+      const lambda = 1e-4;
+      for (let r = 0; r < M; r++) XtX[r][r] += lambda;
+
+      // Solve XtX * coeffs = Xty using Gauss-Jordan Elimination
+      state.coeffs = solveLinearSystem(XtX, Xty);
+
+      // Compute MSE errors
+      computeErrors();
+    }
+
+    function evaluatePoly(coeffs, x) {
+      let y = 0;
+      let xPow = 1;
+      for (let i = 0; i < coeffs.length; i++) {
+        y += coeffs[i] * xPow;
+        xPow *= x;
+      }
+      return y;
+    }
+
+    function solveLinearSystem(A, b) {
+      const n = b.length;
+      const M = A.map((row, i) => [...row, b[i]]);
+
+      for (let i = 0; i < n; i++) {
+        let maxRow = i;
+        for (let k = i + 1; k < n; k++) {
+          if (Math.abs(M[k][i]) > Math.abs(M[maxRow][i])) maxRow = k;
+        }
+        [M[i], M[maxRow]] = [M[maxRow], M[i]];
+
+        if (Math.abs(M[i][i]) < 1e-12) continue;
+
+        for (let k = i + 1; k < n; k++) {
+          const c = -M[k][i] / M[i][i];
+          for (let j = i; j <= n; j++) {
+            if (i === j) M[k][j] = 0;
+            else M[k][j] += c * M[i][j];
+          }
+        }
+      }
+
+      const x = new Float64Array(n);
+      for (let i = n - 1; i >= 0; i--) {
+        x[i] = M[i][n] / (M[i][i] || 1e-6);
+        for (let k = i - 1; k >= 0; k--) {
+          M[k][n] -= M[k][i] * x[i];
+        }
+      }
+      return x;
+    }
+
+    function computeErrors() {
+      let trainErr = 0, trainCount = 0;
+      let testErr = 0, testCount = 0;
+
+      state.points.forEach(p => {
+        const predY = evaluatePoly(state.coeffs, p.x);
+        const err = (p.y - predY) ** 2;
+        if (state.showSplit && p.isTest) {
+          testErr += err; testCount++;
+        } else {
+          trainErr += err; trainCount++;
+        }
+      });
+
+      state.trainMSE = trainCount > 0 ? trainErr / trainCount : 0;
+      state.testMSE = testCount > 0 ? testErr / testCount : state.trainMSE;
+    }
+
+    // -------------------------------------------------------------
+    // CANVAS RENDERER
+    // -------------------------------------------------------------
+    const canvas = document.getElementById('simCanvas');
+    const ctx = canvas.getContext('2d');
+    let width = 0, height = 0;
+
+    function resizeCanvas() {
+      const rect = canvas.parentElement.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      width = rect.width; height = rect.height;
+      canvas.width = width * dpr; canvas.height = height * dpr;
+      ctx.scale(dpr, dpr);
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    function worldToScreen(x, y) {
+      const padding = 60;
+      const w = width - 2 * padding;
+      const h = height - 2 * padding;
+      const sx = padding + ((x + 1) / 2) * w;
+      const sy = padding + ((1 - (y + 1) / 2)) * h;
+      return { x: sx, y: sy };
+    }
+
+    function screenToWorld(sx, sy) {
+      const padding = 60;
+      const w = width - 2 * padding;
+      const h = height - 2 * padding;
+      const x = ((sx - padding) / w) * 2 - 1;
+      const y = (1 - (sy - padding) / h) * 2 - 1;
+      return { x: Math.max(-0.95, Math.min(0.95, x)), y: Math.max(-0.95, Math.min(0.95, y)) };
+    }
+
+    function render() {
+      ctx.clearRect(0, 0, width, height);
+
+      // Draw Grid & Axes
+      ctx.strokeStyle = getComputedStyle(document.body).getPropertyValue('--grid-line');
+      ctx.lineWidth = 1;
+
+      for (let x = -0.8; x <= 0.81; x += 0.2) {
+        const sp = worldToScreen(x, 0);
+        ctx.beginPath(); ctx.moveTo(sp.x, 0); ctx.lineTo(sp.x, height); ctx.stroke();
+      }
+      for (let y = -0.8; y <= 0.81; y += 0.2) {
+        const sp = worldToScreen(0, y);
+        ctx.beginPath(); ctx.moveTo(0, sp.y); ctx.lineTo(width, sp.y); ctx.stroke();
+      }
+
+      // Draw Main Axes
+      const origin = worldToScreen(0, 0);
+      ctx.strokeStyle = getComputedStyle(document.body).getPropertyValue('--grid-axis');
+      ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(0, origin.y); ctx.lineTo(width, origin.y); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(origin.x, 0); ctx.lineTo(origin.x, height); ctx.stroke();
+
+      // Axis Labels
+      ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--text-muted');
+      ctx.font = '500 12px Inter';
+      ctx.fillText('Feature X (Size)', width - 110, origin.y - 10);
+      ctx.fillText('Target Y (Price)', origin.x + 10, 30);
+
+      // Draw Polynomial Regression Curve
+      const colorCurve = getComputedStyle(document.body).getPropertyValue('--accent-curve').trim();
+      ctx.save();
+      ctx.strokeStyle = colorCurve;
+      ctx.lineWidth = 3.5;
+      ctx.beginPath();
+
+      const step = 0.01;
+      let first = true;
+      for (let x = -0.95; x <= 0.95; x += step) {
+        const y = Math.max(-1.1, Math.min(1.1, evaluatePoly(state.coeffs, x)));
+        const sp = worldToScreen(x, y);
+        if (first) { ctx.moveTo(sp.x, sp.y); first = false; }
+        else ctx.lineTo(sp.x, sp.y);
+      }
+      ctx.stroke();
+      ctx.restore();
+
+      // Residual Lines (if enabled)
+      if (state.showResiduals) {
+        ctx.save();
+        ctx.setLineDash([4, 4]);
+        ctx.lineWidth = 1.5;
+
+        state.points.forEach(p => {
+          const predY = evaluatePoly(state.coeffs, p.x);
+          const spData = worldToScreen(p.x, p.y);
+          const spPred = worldToScreen(p.x, predY);
+          ctx.strokeStyle = (state.showSplit && p.isTest) ? 'rgba(245, 158, 11, 0.5)' : 'rgba(56, 189, 248, 0.5)';
+          ctx.beginPath(); ctx.moveTo(spData.x, spData.y); ctx.lineTo(spPred.x, spPred.y); ctx.stroke();
+        });
+        ctx.restore();
+      }
+
+      // Draw Data Points
+      const colorTrain = getComputedStyle(document.body).getPropertyValue('--accent-train').trim();
+      const colorTest = getComputedStyle(document.body).getPropertyValue('--accent-test').trim();
+
+      state.points.forEach((p, idx) => {
+        const sp = worldToScreen(p.x, p.y);
+        const isTestPoint = state.showSplit && p.isTest;
+        const color = isTestPoint ? colorTest : colorTrain;
+
+        ctx.save();
+        ctx.fillStyle = color;
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 2;
+
+        if (isTestPoint) {
+          // Draw Square/Star for Test point
+          ctx.beginPath();
+          ctx.rect(sp.x - 6, sp.y - 6, 12, 12);
+          ctx.fill(); ctx.stroke();
+        } else {
+          // Draw Circle for Train point
+          ctx.beginPath();
+          ctx.arc(sp.x, sp.y, 7, 0, Math.PI * 2);
+          ctx.fill(); ctx.stroke();
+        }
+
+        // Highlight dragged point
+        if (idx === state.draggedIndex) {
+          ctx.strokeStyle = '#ffffff';
+          ctx.lineWidth = 3;
+          ctx.beginPath(); ctx.arc(sp.x, sp.y, 12, 0, Math.PI * 2); ctx.stroke();
+        }
+        ctx.restore();
+      });
+
+      updateHUD();
+      requestAnimationFrame(render);
+    }
+
+    // -------------------------------------------------------------
+    // HUD & DOM UPDATES
+    // -------------------------------------------------------------
+    function updateHUD() {
+      document.getElementById('hud-train-mse').textContent = state.trainMSE.toFixed(4);
+      document.getElementById('hud-test-mse').textContent = state.showSplit ? state.testMSE.toFixed(4) : 'N/A';
+      
+      const gap = state.testMSE - state.trainMSE;
+      document.getElementById('hud-gap').textContent = state.showSplit ? (gap >= 0 ? `+${gap.toFixed(4)}` : gap.toFixed(4)) : 'N/A';
+
+      // Update Fit Status Badge
+      const badge = document.getElementById('fit-status-badge');
+      const bTitle = document.getElementById('badge-title');
+      const bSub = document.getElementById('badge-sub');
+
+      badge.className = '';
+      if (state.degree === 1) {
+        badge.classList.add('status-underfit');
+        bTitle.textContent = 'UNDERFITTING (High Bias)';
+        bSub.textContent = '(Degree 1: Too Simple)';
+      } else if (state.degree <= 3) {
+        badge.classList.add('status-optimal');
+        bTitle.textContent = 'OPTIMAL GENERALIZATION';
+        bSub.textContent = `(Degree ${state.degree}: Balanced)`;
+      } else {
+        badge.classList.add('status-overfit');
+        bTitle.textContent = 'OVERFITTING (High Variance)';
+        bSub.textContent = `(Degree ${state.degree}: Memorizing Noise!)`;
+      }
+    }
+
+    // -------------------------------------------------------------
+    // EVENT LISTENERS & INTERACTION
+    // -------------------------------------------------------------
+    document.getElementById('slide-degree').addEventListener('input', (e) => {
+      state.degree = parseInt(e.target.value);
+      document.getElementById('val-degree').textContent = state.degree;
+      fitPolynomial();
+    });
+
+    document.getElementById('slide-noise').addEventListener('input', (e) => {
+      state.noise = parseInt(e.target.value) / 100;
+      document.getElementById('val-noise').textContent = `${e.target.value}%`;
+      generateDataset();
+    });
+
+    document.getElementById('slide-npoints').addEventListener('input', (e) => {
+      state.numPoints = parseInt(e.target.value);
+      document.getElementById('val-npoints').textContent = state.numPoints;
+      generateDataset();
+    });
+
+    // Presets
+    document.getElementById('pre-underfit').addEventListener('click', () => {
+      state.degree = 1; document.getElementById('slide-degree').value = 1;
+      document.getElementById('val-degree').textContent = 1;
+      fitPolynomial();
+    });
+
+    document.getElementById('pre-optimal').addEventListener('click', () => {
+      state.degree = 2; document.getElementById('slide-degree').value = 2;
+      document.getElementById('val-degree').textContent = 2;
+      fitPolynomial();
+    });
+
+    document.getElementById('pre-overfit').addEventListener('click', () => {
+      state.degree = 9; document.getElementById('slide-degree').value = 9;
+      document.getElementById('val-degree').textContent = 9;
+      fitPolynomial();
+    });
+
+    document.getElementById('pre-scarce').addEventListener('click', () => {
+      state.degree = 5; state.numPoints = 6;
+      document.getElementById('slide-degree').value = 5; document.getElementById('val-degree').textContent = 5;
+      document.getElementById('slide-npoints').value = 6; document.getElementById('val-npoints').textContent = 6;
+      generateDataset();
+    });
+
+    // Interactive Dragging
+    canvas.addEventListener('mousedown', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const sx = e.clientX - rect.left; const sy = e.clientY - rect.top;
+
+      state.draggedIndex = -1;
+      state.points.forEach((p, idx) => {
+        const sp = worldToScreen(p.x, p.y);
+        if (Math.hypot(sx - sp.x, sy - sp.y) < 18) {
+          state.draggedIndex = idx;
+        }
+      });
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (state.draggedIndex < 0) return;
+      const rect = canvas.getBoundingClientRect();
+      const wPos = screenToWorld(e.clientX - rect.left, e.clientY - rect.top);
+      state.points[state.draggedIndex].x = wPos.x;
+      state.points[state.draggedIndex].y = wPos.y;
+      fitPolynomial();
+    });
+
+    window.addEventListener('mouseup', () => { state.draggedIndex = -1; });
+
+    // Buttons
+    document.getElementById('btn-regen').addEventListener('click', generateDataset);
+    document.getElementById('btn-split').addEventListener('click', (e) => {
+      state.showSplit = !state.showSplit;
+      e.currentTarget.classList.toggle('active', state.showSplit);
+      fitPolynomial();
+    });
+    document.getElementById('btn-residuals').addEventListener('click', (e) => {
+      state.showResiduals = !state.showResiduals;
+      e.currentTarget.classList.toggle('active', state.showResiduals);
+    });
+    document.getElementById('btn-theme').addEventListener('click', () => {
+      document.body.classList.toggle('light-theme');
+    });
+
+    // Initialize
+    generateDataset();
+    requestAnimationFrame(render);
+  </script>
+</body>
+</html>

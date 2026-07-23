@@ -3,1025 +3,342 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Eigenvalues & Eigenvectors | Explained Visually</title>
+  <title>AcadByte | Interactive Explorable Explanations</title>
   
-  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   
-  <!-- KaTeX for Math Formatting -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
-
   <style>
     :root {
-      --bg-dark: #090d16;
-      --panel-bg: rgba(17, 24, 39, 0.85);
-      --panel-border: rgba(255, 255, 255, 0.1);
-      --text-main: #f3f4f6;
-      --text-muted: #9ca3af;
-      --accent-v: #38bdf8;
-      --accent-av: #fb7185;
-      --accent-eig1: #a855f7;
-      --accent-eig2: #34d399;
-      --accent-align: #f59e0b;
-      --grid-line: rgba(255, 255, 255, 0.07);
-      --grid-axis: rgba(255, 255, 255, 0.3);
+      --bg-dark: #070a12;
+      --card-bg: rgba(17, 24, 39, 0.7);
+      --card-border: rgba(255, 255, 255, 0.1);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent-cyan: #38bdf8;
+      --accent-pink: #ec4899;
+      --accent-purple: #a855f7;
+      --accent-amber: #f59e0b;
       --font-main: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       --font-mono: 'Fira Code', monospace;
     }
 
-    .light-theme {
-      --bg-dark: #f8fafc;
-      --panel-bg: rgba(255, 255, 255, 0.9);
-      --panel-border: rgba(0, 0, 0, 0.1);
-      --text-main: #0f172a;
-      --text-muted: #64748b;
-      --accent-v: #0284c7;
-      --accent-av: #e11d48;
-      --accent-eig1: #7e22ce;
-      --accent-eig2: #059669;
-      --accent-align: #d97706;
-      --grid-line: rgba(0, 0, 0, 0.07);
-      --grid-axis: rgba(0, 0, 0, 0.3);
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      user-select: none;
-    }
-
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
     body {
       font-family: var(--font-main);
       background-color: var(--bg-dark);
       color: var(--text-main);
-      height: 100vh;
-      overflow: hidden;
-      display: flex;
-      transition: background-color 0.3s ease, color 0.3s ease;
-    }
-
-    #app-container {
-      display: flex;
-      width: 100vw;
-      height: 100vh;
-    }
-
-    /* Canvas Area */
-    #canvas-container {
-      flex: 1;
-      position: relative;
-      height: 100%;
-      background: radial-gradient(circle at center, rgba(30, 41, 59, 0.3) 0%, transparent 80%);
-    }
-
-    canvas {
-      width: 100%;
-      height: 100%;
-      display: block;
-      cursor: crosshair;
-    }
-
-    /* Canvas Floating Overlay Elements */
-    .floating-overlay {
-      position: absolute;
-      top: 16px;
-      left: 16px;
-      display: flex;
-      gap: 10px;
-      z-index: 10;
-    }
-
-    .icon-btn {
-      background: var(--panel-bg);
-      border: 1px solid var(--panel-border);
-      color: var(--text-main);
-      padding: 8px 12px;
-      border-radius: 8px;
-      font-size: 0.85rem;
-      font-weight: 500;
-      cursor: pointer;
-      backdrop-filter: blur(12px);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      transition: all 0.2s ease;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    }
-
-    .icon-btn:hover {
-      background: rgba(255, 255, 255, 0.15);
-      border-color: rgba(255, 255, 255, 0.3);
-      transform: translateY(-1px);
-    }
-
-    .icon-btn.active {
-      background: var(--accent-v);
-      color: #000;
-      border-color: var(--accent-v);
-      font-weight: 600;
-    }
-
-    /* Alignment Badge Popup */
-    #alignment-badge {
-      position: absolute;
-      bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%) translateY(20px);
-      background: linear-gradient(135deg, rgba(245, 158, 11, 0.95), rgba(217, 119, 6, 0.95));
-      color: #ffffff;
-      padding: 10px 24px;
-      border-radius: 30px;
-      font-weight: 700;
-      font-size: 0.95rem;
-      letter-spacing: 0.5px;
-      box-shadow: 0 8px 24px rgba(245, 158, 11, 0.4), 0 0 20px rgba(245, 158, 11, 0.6);
-      backdrop-filter: blur(8px);
-      opacity: 0;
-      pointer-events: none;
-      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-      z-index: 20;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    #alignment-badge.visible {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
-
-    /* Sidebar Control Panel */
-    #sidebar {
-      width: 420px;
-      height: 100%;
-      background: var(--panel-bg);
-      border-left: 1px solid var(--panel-border);
-      backdrop-filter: blur(20px);
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
-      overflow-y: auto;
-      z-index: 10;
-      box-shadow: -10px 0 30px rgba(0, 0, 0, 0.2);
+      background-image: 
+        radial-gradient(circle at 15% 20%, rgba(56, 189, 248, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 85% 80%, rgba(236, 72, 153, 0.08) 0%, transparent 40%);
     }
 
-    .sidebar-header {
-      padding: 24px;
-      border-bottom: 1px solid var(--panel-border);
-    }
-
-    .sidebar-header h1 {
-      font-size: 1.35rem;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-      background: linear-gradient(135deg, var(--text-main), var(--text-muted));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 4px;
-    }
-
-    .sidebar-header p {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-    }
-
-    .section {
-      padding: 20px 24px;
-      border-bottom: 1px solid var(--panel-border);
-    }
-
-    .section-title {
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: var(--text-muted);
-      font-weight: 600;
-      margin-bottom: 14px;
+    /* Navbar */
+    header {
+      padding: 24px 48px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      border-bottom: 1px solid var(--card-border);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 50;
     }
 
-    /* Preset Chips */
-    .presets-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 8px;
-      margin-bottom: 16px;
-    }
-
-    .chip-btn {
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid var(--panel-border);
-      color: var(--text-main);
-      padding: 8px 12px;
-      border-radius: 6px;
-      font-size: 0.8rem;
-      cursor: pointer;
-      text-align: left;
-      transition: all 0.15s ease;
-    }
-
-    .chip-btn:hover {
-      background: rgba(255, 255, 255, 0.1);
-      border-color: rgba(255, 255, 255, 0.2);
-    }
-
-    /* Matrix Controls */
-    .matrix-container {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      background: rgba(0, 0, 0, 0.2);
-      padding: 16px;
-      border-radius: 12px;
-      border: 1px solid var(--panel-border);
-      position: relative;
-    }
-
-    .matrix-container::before, .matrix-container::after {
-      content: '';
-      position: absolute;
-      top: 10px;
-      bottom: 10px;
-      width: 6px;
-      border: 2px solid var(--text-muted);
-    }
-    .matrix-container::before { left: 6px; border-right: none; border-radius: 4px 0 0 4px; }
-    .matrix-container::after { right: 6px; border-left: none; border-radius: 0 4px 4px 0; }
-
-    .matrix-cell {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .matrix-cell label {
-      font-size: 0.75rem;
-      font-family: var(--font-mono);
-      color: var(--text-muted);
-    }
-
-    .matrix-cell-controls {
+    .brand {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--text-main);
     }
 
-    .matrix-input {
-      width: 54px;
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid var(--panel-border);
-      color: var(--text-main);
-      padding: 4px 8px;
-      border-radius: 6px;
-      font-family: var(--font-mono);
-      font-size: 0.9rem;
+    .brand-logo {
+      width: 38px;
+      height: 38px;
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-pink));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1.2rem;
+      color: #fff;
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.3);
+    }
+
+    .brand-title {
+      font-size: 1.3rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    /* Hero Section */
+    .hero {
+      max-width: 1200px;
+      margin: 60px auto 40px;
+      padding: 0 24px;
       text-align: center;
     }
 
-    .matrix-input:focus {
-      outline: none;
-      border-color: var(--accent-v);
-      background: rgba(255, 255, 255, 0.15);
+    .hero-tag {
+      display: inline-block;
+      padding: 6px 16px;
+      border-radius: 20px;
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: var(--accent-cyan);
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+      letter-spacing: 0.5px;
     }
 
-    .matrix-slider {
-      flex: 1;
-      accent-color: var(--accent-v);
-      cursor: pointer;
+    .hero h1 {
+      font-size: 3.2rem;
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -1px;
+      margin-bottom: 20px;
+      background: linear-gradient(135deg, #ffffff 0%, var(--text-muted) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
-    /* Math HUD Readouts */
-    .hud-card {
-      background: rgba(0, 0, 0, 0.25);
-      border-radius: 10px;
-      padding: 14px;
-      border: 1px solid var(--panel-border);
-      margin-bottom: 12px;
+    .hero p {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      max-width: 680px;
+      margin: 0 auto;
+      line-height: 1.6;
     }
 
-    .hud-row {
+    /* Modules Grid Section */
+    .modules-section {
+      max-width: 1200px;
+      margin: 40px auto 80px;
+      padding: 0 24px;
+      width: 100%;
+    }
+
+    .section-heading {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 32px;
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      font-size: 0.85rem;
-      margin-bottom: 8px;
+      gap: 12px;
     }
 
-    .hud-row:last-child {
-      margin-bottom: 0;
+    .section-heading::after {
+      content: '';
+      flex: 1;
+      height: 1e-3px;
+      height: 1px;
+      background: var(--card-border);
     }
 
-    .hud-label {
-      color: var(--text-muted);
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      gap: 32px;
     }
 
-    .hud-value {
-      font-family: var(--font-mono);
-      font-weight: 500;
-    }
-
-    .vector-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 3px 8px;
-      border-radius: 4px;
-      font-family: var(--font-mono);
-      font-size: 0.8rem;
-    }
-
-    .pill-v { background: rgba(56, 189, 248, 0.15); color: var(--accent-v); border: 1px solid rgba(56, 189, 248, 0.3); }
-    .pill-av { background: rgba(251, 113, 133, 0.15); color: var(--accent-av); border: 1px solid rgba(251, 113, 133, 0.3); }
-    .pill-eig1 { background: rgba(168, 85, 247, 0.15); color: var(--accent-eig1); border: 1px solid rgba(168, 85, 247, 0.3); }
-    .pill-eig2 { background: rgba(52, 211, 153, 0.15); color: var(--accent-eig2); border: 1px solid rgba(52, 211, 153, 0.3); }
-
-    /* Intuition Card */
-    .explainer-box {
-      font-size: 0.85rem;
-      line-height: 1.5;
-      color: var(--text-muted);
-      background: rgba(255, 255, 255, 0.02);
-      padding: 14px;
-      border-radius: 8px;
-      border-left: 3px solid var(--accent-v);
-    }
-
-    .explainer-box strong {
+    /* Interactive Module Card */
+    .module-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      text-decoration: none;
       color: var(--text-main);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
     }
 
-    /* Scrollbar */
-    #sidebar::-webkit-scrollbar {
-      width: 6px;
-    }
-    #sidebar::-webkit-scrollbar-track {
-      background: transparent;
-    }
-    #sidebar::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 3px;
+    .module-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(255, 255, 255, 0.3);
+      box-shadow: 0 20px 40px rgba(56, 189, 248, 0.15);
     }
 
-    @media (max-width: 900px) {
-      #app-container {
-        flex-direction: column;
-      }
-      #sidebar {
-        width: 100vw;
-        height: 50vh;
-      }
-      #canvas-container {
-        height: 50vh;
-      }
+    .card-banner {
+      width: 100%;
+      height: 220px;
+      background: #0f172a;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card-body {
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .card-badge {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+      width: fit-content;
+    }
+
+    .badge-math { background: rgba(168, 85, 247, 0.15); color: var(--accent-purple); border: 1px solid rgba(168, 85, 247, 0.3); }
+    .badge-ml { background: rgba(236, 72, 153, 0.15); color: var(--accent-pink); border: 1px solid rgba(236, 72, 153, 0.3); }
+
+    .card-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .card-desc {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-bottom: 24px;
+      flex: 1;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--accent-cyan);
+    }
+
+    .card-footer svg {
+      transition: transform 0.2s ease;
+    }
+
+    .module-card:hover .card-footer svg {
+      transform: translateX(6px);
+    }
+
+    /* Footer */
+    footer {
+      margin-top: auto;
+      padding: 32px 48px;
+      border-top: 1px solid var(--card-border);
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.9rem;
     }
   </style>
 </head>
 <body>
 
-  <div id="app-container">
-    <!-- Interactive Canvas Viewport -->
-    <div id="canvas-container">
-      <canvas id="simCanvas"></canvas>
-      
-      <!-- Top Control Bar Overlay -->
-      <div class="floating-overlay">
-        <button class="icon-btn" id="btn-grid-transform">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h18v18H3zM12 3v18M3 12h18"/></svg>
-          Deform Grid
-        </button>
-        <button class="icon-btn active" id="btn-snap">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M2 12h20M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"/></svg>
-          Snap to Eigenvector
-        </button>
-        <button class="icon-btn" id="btn-reset-v">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
-          Reset Vector
-        </button>
-        <button class="icon-btn" id="btn-theme">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a9 9 0 1 0 9 9 9.75 9.75 0 0 0-.74-3.6A6 6 0 0 1 12 3z"/></svg>
-          Theme
-        </button>
-      </div>
+  <!-- Navigation Bar -->
+  <header>
+    <a href="index.html" class="brand">
+      <div class="brand-logo">A</div>
+      <div class="brand-title">AcadByte</div>
+    </a>
+  </header>
 
-      <!-- Alignment Visual Cue Banner -->
-      <div id="alignment-badge">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-        <span>EIGENVECTOR ALIGNED!</span>
-        <span id="badge-lambda" style="font-family: var(--font-mono); text-decoration: underline;">λ = 1.00</span>
-      </div>
+  <!-- Hero Banner -->
+  <section class="hero">
+    <div class="hero-tag">EXPLAINED VISUALLY</div>
+    <h1>Interactive Explorables for Math & Machine Learning</h1>
+    <p>Hands-on visual simulations built to build deep, intuitive understanding through real-time feedback and dynamic controls.</p>
+  </section>
+
+  <!-- Learning Modules Section -->
+  <section class="modules-section">
+    <div class="section-heading">Interactive Learning Modules</div>
+
+    <div class="grid">
+      <!-- Module 1: Eigenvalues & Eigenvectors -->
+      <a href="eigen.html" class="module-card">
+        <div class="card-banner">
+          <!-- Dynamic SVG Vector Preview Graphic -->
+          <svg width="100%" height="100%" viewBox="0 0 400 220" fill="none">
+            <rect width="400" height="220" fill="#090d16"/>
+            <!-- Grid lines -->
+            <path d="M0 110H400M200 0V220" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/>
+            <path d="M50 0V220M100 0V220M150 0V220M250 0V220M300 0V220M350 0V220" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+            <path d="M0 50H400M0 100H400M0 160H400M0 210H400" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+            <!-- Eigenvector Dashed Lines -->
+            <line x1="20" y1="200" x2="380" y2="20" stroke="#a855f7" stroke-width="2" stroke-dasharray="6 6"/>
+            <line x1="20" y1="20" x2="380" y2="200" stroke="#34d399" stroke-width="2" stroke-dasharray="6 6"/>
+            <!-- Vector v -->
+            <line x1="200" y1="110" x2="290" y2="50" stroke="#38bdf8" stroke-width="4" stroke-linecap="round"/>
+            <circle cx="290" cy="50" r="7" fill="#38bdf8"/>
+            <circle cx="290" cy="50" r="14" stroke="rgba(56, 189, 248, 0.4)" stroke-width="2"/>
+            <!-- Vector Av -->
+            <line x1="200" y1="110" x2="340" y2="20" stroke="#fb7185" stroke-width="4" stroke-linecap="round"/>
+            <polygon points="340,20 325,28 332,35" fill="#fb7185"/>
+          </svg>
+        </div>
+        <div class="card-body">
+          <div class="card-badge badge-math">Linear Algebra</div>
+          <h2 class="card-title">Eigenvalues & Eigenvectors</h2>
+          <p class="card-desc">Visualize 2D matrix transformations, span alignment, real-time matrix warping, and analytical eigen-decomposition.</p>
+          <div class="card-footer">
+            <span>Explore Visualizer</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </div>
+        </div>
+      </a>
+
+      <!-- Module 2: Overfitting & Bias-Variance -->
+      <a href="ml-overfitting.html" class="module-card">
+        <div class="card-banner">
+          <!-- Dynamic SVG Overfitting Curve Preview Graphic -->
+          <svg width="100%" height="100%" viewBox="0 0 400 220" fill="none">
+            <rect width="400" height="220" fill="#090d16"/>
+            <!-- Grid lines -->
+            <path d="M40 180H360M40 30V180" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/>
+            <!-- Overfitting Oscillating Curve -->
+            <path d="M 50 160 Q 90 40 140 140 T 230 60 T 320 170 T 350 40" stroke="#ec4899" stroke-width="3.5" fill="none"/>
+            <!-- Scatter Points -->
+            <circle cx="70" cy="150" r="5" fill="#38bdf8" stroke="#fff" stroke-width="1.5"/>
+            <circle cx="110" cy="65" r="5" fill="#f59e0b" stroke="#fff" stroke-width="1.5"/>
+            <circle cx="150" cy="130" r="5" fill="#38bdf8" stroke="#fff" stroke-width="1.5"/>
+            <circle cx="200" cy="90" r="5" fill="#38bdf8" stroke="#fff" stroke-width="1.5"/>
+            <circle cx="250" cy="75" r="5" fill="#f59e0b" stroke="#fff" stroke-width="1.5"/>
+            <circle cx="310" cy="160" r="5" fill="#38bdf8" stroke="#fff" stroke-width="1.5"/>
+            <!-- Residual lines -->
+            <line x1="110" y1="65" x2="110" y2="85" stroke="rgba(245, 158, 11, 0.6)" stroke-width="1.5" stroke-dasharray="3 3"/>
+            <line x1="250" y1="75" x2="250" y2="105" stroke="rgba(245, 158, 11, 0.6)" stroke-width="1.5" stroke-dasharray="3 3"/>
+          </svg>
+        </div>
+        <div class="card-body">
+          <div class="card-badge badge-ml">Machine Learning</div>
+          <h2 class="card-title">Overfitting & Bias-Variance</h2>
+          <p class="card-desc">Master polynomial regression, underfitting vs overfitting, train/test generalization gaps, and data noise sensitivity.</p>
+          <div class="card-footer">
+            <span>Explore Visualizer</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </div>
+        </div>
+      </a>
     </div>
+  </section>
 
-    <!-- Sidebar HUD & Controls Panel -->
-    <div id="sidebar">
-      <div class="sidebar-header">
-        <h1>Eigenvalues & Eigenvectors</h1>
-        <p>Setosa-inspired Interactive Linear Algebra</p>
-      </div>
+  <!-- Footer -->
+  <footer>
+    <p>AcadByte Visual Explorables &copy; 2026. Built with HTML5 Canvas & Pure JS.</p>
+  </footer>
 
-      <!-- Presets Section -->
-      <div class="section">
-        <div class="section-title">Matrix Presets</div>
-        <div class="presets-grid">
-          <button class="chip-btn" data-preset="stretch">Diagonal Stretch</button>
-          <button class="chip-btn" data-preset="shear">Horizontal Shear</button>
-          <button class="chip-btn" data-preset="rotation">Pure Rotation</button>
-          <button class="chip-btn" data-preset="reflection">Y-Axis Reflection</button>
-          <button class="chip-btn" data-preset="projection">Line Projection</button>
-          <button class="chip-btn" data-preset="complex">Complex Roots</button>
-        </div>
-      </div>
-
-      <!-- Matrix Inputs Section -->
-      <div class="section">
-        <div class="section-title">Transformation Matrix A</div>
-        <div class="matrix-container">
-          <div class="matrix-cell">
-            <label for="m-a">a (x₁₁)</label>
-            <div class="matrix-cell-controls">
-              <input type="number" id="m-a" class="matrix-input" value="2" step="0.1">
-              <input type="range" id="s-a" class="matrix-slider" min="-4" max="4" step="0.1" value="2">
-            </div>
-          </div>
-          <div class="matrix-cell">
-            <label for="m-b">b (x₁₂)</label>
-            <div class="matrix-cell-controls">
-              <input type="number" id="m-b" class="matrix-input" value="1" step="0.1">
-              <input type="range" id="s-b" class="matrix-slider" min="-4" max="4" step="0.1" value="1">
-            </div>
-          </div>
-          <div class="matrix-cell">
-            <label for="m-c">c (x₂₁)</label>
-            <div class="matrix-cell-controls">
-              <input type="number" id="m-c" class="matrix-input" value="1" step="0.1">
-              <input type="range" id="s-c" class="matrix-slider" min="-4" max="4" step="0.1" value="1">
-            </div>
-          </div>
-          <div class="matrix-cell">
-            <label for="m-d">d (x₂₂)</label>
-            <div class="matrix-cell-controls">
-              <input type="number" id="m-d" class="matrix-input" value="2" step="0.1">
-              <input type="range" id="s-d" class="matrix-slider" min="-4" max="4" step="0.1" value="2">
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Live Vector HUD -->
-      <div class="section">
-        <div class="section-title">Live Vector Multiplications</div>
-        <div class="hud-card">
-          <div class="hud-row">
-            <span class="hud-label">Input Vector v</span>
-            <span class="vector-pill pill-v" id="hud-v">[1.00, 2.00]</span>
-          </div>
-          <div class="hud-row">
-            <span class="hud-label">Transformed Av</span>
-            <span class="vector-pill pill-av" id="hud-av">[4.00, 5.00]</span>
-          </div>
-          <div class="hud-row">
-            <span class="hud-label">Length Ratio ||Av|| / ||v||</span>
-            <span class="hud-value" id="hud-ratio">2.23</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Eigenvalues & Eigenvectors Calculations -->
-      <div class="section">
-        <div class="section-title">Analytical Eigen-Decomposition</div>
-        <div class="hud-card">
-          <div class="hud-row">
-            <span class="hud-label">Trace tr(A) & Determinant det(A)</span>
-            <span class="hud-value" id="hud-tr-det">tr = 4.0, det = 3.0</span>
-          </div>
-          <div class="hud-row">
-            <span class="hud-label">Eigenvalue λ₁</span>
-            <span class="vector-pill pill-eig1" id="hud-lambda1">λ₁ = 3.00</span>
-          </div>
-          <div class="hud-row">
-            <span class="hud-label">Eigenvalue λ₂</span>
-            <span class="vector-pill pill-eig2" id="hud-lambda2">λ₂ = 1.00</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Intuition Explainer -->
-      <div class="section">
-        <div class="section-title">Intuition</div>
-        <div class="explainer-box">
-          <p>An <strong>eigenvector</strong> <strong>v</strong> is a special direction in space that doesn't change angle when multiplied by matrix A—it only stretches or shrinks by the scalar <strong>eigenvalue</strong> λ:</p>
-          <p style="margin-top: 8px; font-family: var(--font-mono); text-align: center; color: var(--accent-v);">
-            A·v = λ·v
-          </p>
-          <p style="margin-top: 8px;">Drag the blue handle for vector <strong>v</strong> around the plane to find where A·v aligns perfectly parallel with <strong>v</strong>.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    // -------------------------------------------------------------
-    // STATE & SIMULATION ENGINE
-    // -------------------------------------------------------------
-    const state = {
-      matrix: { a: 2, b: 1, c: 1, d: 2 },
-      v: { x: 1.5, y: 1.0 },
-      isDragging: false,
-      showGridTransform: false,
-      snapToEigenvector: true,
-      isAligned: false,
-      alignedLambda: null,
-      zoom: 50, // pixels per unit
-      offset: { x: 0, y: 0 },
-      pulseTime: 0
-    };
-
-    // Matrix Presets
-    const PRESETS = {
-      stretch: { a: 3, b: 0, c: 0, d: 1 },
-      shear: { a: 1, b: 1.5, c: 0, d: 1 },
-      rotation: { a: 0.707, b: -0.707, c: 0.707, d: 0.707 },
-      reflection: { a: 1, b: 0, c: 0, d: -1 },
-      projection: { a: 1, b: 0, c: 0, d: 0 },
-      complex: { a: 0.5, b: -1.5, c: 1.5, d: 0.5 }
-    };
-
-    // Linear Algebra Functions
-    function transformVector(M, v) {
-      return {
-        x: M.a * v.x + M.b * v.y,
-        y: M.c * v.x + M.d * v.y
-      };
-    }
-
-    function computeEigen() {
-      const { a, b, c, d } = state.matrix;
-      const tr = a + d;
-      const det = a * d - b * c;
-      const disc = tr * tr - 4 * det;
-
-      let lambda1 = null, lambda2 = null;
-      let eig1 = null, eig2 = null;
-      let isComplex = false;
-
-      if (disc >= 0) {
-        const sqrtD = Math.sqrt(disc);
-        lambda1 = (tr + sqrtD) / 2;
-        lambda2 = (tr - sqrtD) / 2;
-
-        // Eigenvectors
-        eig1 = findEigenvector(a, b, c, d, lambda1);
-        eig2 = findEigenvector(a, b, c, d, lambda2);
-      } else {
-        isComplex = true;
-        const real = (tr / 2).toFixed(2);
-        const imag = (Math.sqrt(-disc) / 2).toFixed(2);
-        lambda1 = `${real} + ${imag}i`;
-        lambda2 = `${real} - ${imag}i`;
-      }
-
-      return { tr, det, disc, lambda1, lambda2, eig1, eig2, isComplex };
-    }
-
-    function findEigenvector(a, b, c, d, lambda) {
-      // (A - lambda I) v = 0
-      const a_l = a - lambda;
-      const d_l = d - lambda;
-
-      let vx = 0, vy = 0;
-      if (Math.abs(b) > 1e-5) {
-        vx = 1;
-        vy = -a_l / b;
-      } else if (Math.abs(c) > 1e-5) {
-        vx = -d_l / c;
-        vy = 1;
-      } else if (Math.abs(a_l) < 1e-5) {
-        vx = 1; vy = 0;
-      } else {
-        vx = 0; vy = 1;
-      }
-
-      const len = Math.hypot(vx, vy);
-      return len > 1e-5 ? { x: vx / len, y: vy / len } : null;
-    }
-
-    // Angle calculation between vectors/lines
-    function angleBetween(v1, v2) {
-      const dot = v1.x * v2.x + v1.y * v2.y;
-      const mag1 = Math.hypot(v1.x, v1.y);
-      const mag2 = Math.hypot(v2.x, v2.y);
-      if (mag1 < 1e-5 || mag2 < 1e-5) return 0;
-      let cosTheta = Math.max(-1, Math.min(1, dot / (mag1 * mag2)));
-      return Math.acos(cosTheta);
-    }
-
-    function minLineAngle(v, eig) {
-      if (!eig) return Infinity;
-      const theta1 = angleBetween(v, eig);
-      const theta2 = angleBetween(v, { x: -eig.x, y: -eig.y });
-      return Math.min(theta1, theta2);
-    }
-
-    // -------------------------------------------------------------
-    // CANVAS RENDERER
-    // -------------------------------------------------------------
-    const canvas = document.getElementById('simCanvas');
-    const ctx = canvas.getContext('2d');
-    let width = 0, height = 0;
-
-    function resizeCanvas() {
-      const rect = canvas.parentElement.getBoundingClientRect();
-      const dpr = window.devicePixelRatio || 1;
-      width = rect.width;
-      height = rect.height;
-      canvas.width = width * dpr;
-      canvas.height = height * dpr;
-      ctx.scale(dpr, dpr);
-    }
-
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
-
-    function worldToScreen(x, y) {
-      const cx = width / 2 + state.offset.x;
-      const cy = height / 2 + state.offset.y;
-      return {
-        x: cx + x * state.zoom,
-        y: cy - y * state.zoom // Flip Y
-      };
-    }
-
-    function screenToWorld(sx, sy) {
-      const cx = width / 2 + state.offset.x;
-      const cy = height / 2 + state.offset.y;
-      return {
-        x: (sx - cx) / state.zoom,
-        y: (cy - sy) / state.zoom
-      };
-    }
-
-    function drawArrow(from, to, color, width = 3, headLen = 12) {
-      const dx = to.x - from.x;
-      const dy = to.y - from.y;
-      const angle = Math.atan2(dy, dx);
-      const dist = Math.hypot(dx, dy);
-
-      if (dist < 2) return;
-
-      ctx.save();
-      ctx.strokeStyle = color;
-      ctx.fillStyle = color;
-      ctx.lineWidth = width;
-      ctx.lineCap = 'round';
-
-      // Line
-      ctx.beginPath();
-      ctx.moveTo(from.x, from.y);
-      ctx.lineTo(to.x - Math.cos(angle) * (headLen * 0.6), to.y - Math.sin(angle) * (headLen * 0.6));
-      ctx.stroke();
-
-      // Arrowhead
-      ctx.beginPath();
-      ctx.moveTo(to.x, to.y);
-      ctx.lineTo(to.x - headLen * Math.cos(angle - Math.PI / 6), to.y - headLen * Math.sin(angle - Math.PI / 6));
-      ctx.lineTo(to.x - headLen * Math.cos(angle + Math.PI / 6), to.y - headLen * Math.sin(angle + Math.PI / 6));
-      ctx.closePath();
-      ctx.fill();
-
-      ctx.restore();
-    }
-
-    function drawInfiniteLine(eig, color, label) {
-      if (!eig) return;
-      const p1 = worldToScreen(eig.x * 20, eig.y * 20);
-      const p2 = worldToScreen(-eig.x * 20, -eig.y * 20);
-
-      ctx.save();
-      ctx.strokeStyle = color;
-      ctx.lineWidth = 1.5;
-      ctx.setLineDash([6, 6]);
-      ctx.beginPath();
-      ctx.moveTo(p1.x, p1.y);
-      ctx.lineTo(p2.x, p2.y);
-      ctx.stroke();
-      ctx.restore();
-
-      // Draw label
-      const lp = worldToScreen(eig.x * 4.5, eig.y * 4.5);
-      ctx.save();
-      ctx.fillStyle = color;
-      ctx.font = '600 12px Fira Code';
-      ctx.fillText(label, lp.x + 8, lp.y - 8);
-      ctx.restore();
-    }
-
-    function render() {
-      state.pulseTime += 0.05;
-      ctx.clearRect(0, 0, width, height);
-
-      const eigen = computeEigen();
-
-      // Alignment check
-      let alignedTo = null;
-      const angleThreshold = 0.06; // ~3.4 degrees
-      const minAng1 = minLineAngle(state.v, eigen.eig1);
-      const minAng2 = minLineAngle(state.v, eigen.eig2);
-
-      if (!eigen.isComplex) {
-        if (eigen.eig1 && minAng1 < angleThreshold) {
-          alignedTo = eigen.lambda1;
-        } else if (eigen.eig2 && minAng2 < angleThreshold) {
-          alignedTo = eigen.lambda2;
-        }
-      }
-
-      state.isAligned = alignedTo !== null;
-      state.alignedLambda = alignedTo;
-
-      // Draw Background Grid
-      const origin = worldToScreen(0, 0);
-      const gridStep = state.zoom;
-
-      ctx.save();
-      ctx.strokeStyle = getComputedStyle(document.body).getPropertyValue('--grid-line');
-      ctx.lineWidth = 1;
-
-      // Draw original Cartesian grid
-      const minX = Math.floor(-origin.x / gridStep);
-      const maxX = Math.ceil((width - origin.x) / gridStep);
-      const minY = Math.floor(-(height - origin.y) / gridStep);
-      const maxY = Math.ceil(origin.y / gridStep);
-
-      for (let x = minX; x <= maxX; x++) {
-        const p = worldToScreen(x, 0);
-        ctx.beginPath();
-        ctx.moveTo(p.x, 0);
-        ctx.lineTo(p.x, height);
-        ctx.stroke();
-      }
-      for (let y = minY; y <= maxY; y++) {
-        const p = worldToScreen(0, y);
-        ctx.beginPath();
-        ctx.moveTo(0, p.y);
-        ctx.lineTo(width, p.y);
-        ctx.stroke();
-      }
-
-      // Draw Deformed Grid Mesh (if enabled)
-      if (state.showGridTransform) {
-        ctx.strokeStyle = 'rgba(56, 189, 248, 0.15)';
-        ctx.lineWidth = 1.5;
-
-        for (let x = minX; x <= maxX; x++) {
-          ctx.beginPath();
-          for (let y = minY; y <= maxY; y += 0.2) {
-            const tv = transformVector(state.matrix, { x, y });
-            const sp = worldToScreen(tv.x, tv.y);
-            if (y === minY) ctx.moveTo(sp.x, sp.y);
-            else ctx.lineTo(sp.x, sp.y);
-          }
-          ctx.stroke();
-        }
-
-        for (let y = minY; y <= maxY; y++) {
-          ctx.beginPath();
-          for (let x = minX; x <= maxX; x += 0.2) {
-            const tv = transformVector(state.matrix, { x, y });
-            const sp = worldToScreen(tv.x, tv.y);
-            if (x === minX) ctx.moveTo(sp.x, sp.y);
-            else ctx.lineTo(sp.x, sp.y);
-          }
-          ctx.stroke();
-        }
-      }
-
-      // Draw Main Axes
-      ctx.strokeStyle = getComputedStyle(document.body).getPropertyValue('--grid-axis');
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(0, origin.y); ctx.lineTo(width, origin.y);
-      ctx.moveTo(origin.x, 0); ctx.lineTo(origin.x, height);
-      ctx.stroke();
-
-      // Draw Eigenvector Spans
-      const colorEig1 = getComputedStyle(document.body).getPropertyValue('--accent-eig1').trim();
-      const colorEig2 = getComputedStyle(document.body).getPropertyValue('--accent-eig2').trim();
-
-      if (!eigen.isComplex) {
-        drawInfiniteLine(eigen.eig1, colorEig1, `span(v₁) [λ₁=${eigen.lambda1.toFixed(2)}]`);
-        drawInfiniteLine(eigen.eig2, colorEig2, `span(v₂) [λ₂=${eigen.lambda2.toFixed(2)}]`);
-      }
-
-      // Draw Input Vector v and Transformed Vector Av
-      const Av = transformVector(state.matrix, state.v);
-      const spOrigin = origin;
-      const spV = worldToScreen(state.v.x, state.v.y);
-      const spAv = worldToScreen(Av.x, Av.y);
-
-      const colorV = getComputedStyle(document.body).getPropertyValue('--accent-v').trim();
-      const colorAv = getComputedStyle(document.body).getPropertyValue('--accent-av').trim();
-
-      // Transformed vector Av
-      drawArrow(spOrigin, spAv, colorAv, 4, 14);
-
-      // Input vector v
-      drawArrow(spOrigin, spV, colorV, 4, 14);
-
-      // Draggable Handle on Vector v
-      ctx.save();
-      ctx.fillStyle = colorV;
-      ctx.beginPath();
-      ctx.arc(spV.x, spV.y, 8, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Handle Outer Pulse Ring
-      const pulseRadius = 12 + Math.sin(state.pulseTime * 4) * 3;
-      ctx.strokeStyle = state.isAligned ? 'rgba(245, 158, 11, 0.8)' : 'rgba(56, 189, 248, 0.4)';
-      ctx.lineWidth = state.isAligned ? 3 : 2;
-      ctx.beginPath();
-      ctx.arc(spV.x, spV.y, pulseRadius, 0, Math.PI * 2);
-      ctx.stroke();
-      ctx.restore();
-
-      // Alignment Glow / Ray highlight
-      if (state.isAligned) {
-        ctx.save();
-        ctx.strokeStyle = 'rgba(245, 158, 11, 0.4)';
-        ctx.lineWidth = 12;
-        ctx.beginPath();
-        ctx.moveTo(spOrigin.x, spOrigin.y);
-        ctx.lineTo(spV.x, spV.y);
-        ctx.stroke();
-        ctx.restore();
-      }
-
-      // Update HUD Numbers
-      updateHUD(eigen, Av);
-
-      requestAnimationFrame(render);
-    }
-
-    // -------------------------------------------------------------
-    // HUD & DOM SYNCHRONIZATION
-    // -------------------------------------------------------------
-    function updateHUD(eigen, Av) {
-      document.getElementById('hud-v').textContent = `[${state.v.x.toFixed(2)}, ${state.v.y.toFixed(2)}]`;
-      document.getElementById('hud-av').textContent = `[${Av.x.toFixed(2)}, ${Av.y.toFixed(2)}]`;
-
-      const magV = Math.hypot(state.v.x, state.v.y);
-      const magAv = Math.hypot(Av.x, Av.y);
-      const ratio = magV > 1e-4 ? (magAv / magV).toFixed(2) : '0.00';
-      document.getElementById('hud-ratio').textContent = ratio;
-
-      document.getElementById('hud-tr-det').textContent = `tr = ${eigen.tr.toFixed(2)}, det = ${eigen.det.toFixed(2)}`;
-
-      if (eigen.isComplex) {
-        document.getElementById('hud-lambda1').textContent = `λ₁ = ${eigen.lambda1}`;
-        document.getElementById('hud-lambda2').textContent = `λ₂ = ${eigen.lambda2}`;
-      } else {
-        document.getElementById('hud-lambda1').textContent = `λ₁ = ${eigen.lambda1.toFixed(2)}`;
-        document.getElementById('hud-lambda2').textContent = `λ₂ = ${eigen.lambda2.toFixed(2)}`;
-      }
-
-      // Update Alignment Badge
-      const badge = document.getElementById('alignment-badge');
-      if (state.isAligned && state.alignedLambda !== null) {
-        badge.classList.add('visible');
-        document.getElementById('badge-lambda').textContent = `λ = ${state.alignedLambda.toFixed(2)}`;
-      } else {
-        badge.classList.remove('visible');
-      }
-    }
-
-    // Sync matrix inputs <-> sliders
-    const keys = ['a', 'b', 'c', 'd'];
-    keys.forEach(k => {
-      const numInput = document.getElementById(`m-${k}`);
-      const rangeInput = document.getElementById(`s-${k}`);
-
-      numInput.addEventListener('input', (e) => {
-        const val = parseFloat(e.target.value) || 0;
-        state.matrix[k] = val;
-        rangeInput.value = val;
-      });
-
-      rangeInput.addEventListener('input', (e) => {
-        const val = parseFloat(e.target.value);
-        state.matrix[k] = val;
-        numInput.value = val;
-      });
-    });
-
-    // Preset buttons
-    document.querySelectorAll('.chip-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const presetKey = btn.getAttribute('data-preset');
-        const p = PRESETS[presetKey];
-        if (p) {
-          state.matrix = { ...p };
-          keys.forEach(k => {
-            document.getElementById(`m-${k}`).value = p[k];
-            document.getElementById(`s-${k}`).value = p[k];
-          });
-        }
-      });
-    });
-
-    // -------------------------------------------------------------
-    // INTERACTIVE DRAGGING & SNAPPING
-    // -------------------------------------------------------------
-    function handlePointerMove(e) {
-      if (!state.isDragging) return;
-      const rect = canvas.getBoundingClientRect();
-      const sx = e.clientX - rect.left;
-      const sy = e.clientY - rect.top;
-      let wPos = screenToWorld(sx, sy);
-
-      // Snap logic
-      if (state.snapToEigenvector) {
-        const eigen = computeEigen();
-        if (!eigen.isComplex) {
-          const threshold = 0.12; // Snap angle range ~7 degrees
-          const mag = Math.hypot(wPos.x, wPos.y);
-
-          [eigen.eig1, eigen.eig2].forEach(eig => {
-            if (eig) {
-              const ang = minLineAngle(wPos, eig);
-              if (ang < threshold) {
-                // Snap direction to eigenvector direction
-                const dot = wPos.x * eig.x + wPos.y * eig.y;
-                const sign = dot >= 0 ? 1 : -1;
-                wPos = { x: eig.x * mag * sign, y: eig.y * mag * sign };
-              }
-            }
-          });
-        }
-      }
-
-      state.v = wPos;
-    }
-
-    canvas.addEventListener('mousedown', (e) => {
-      const rect = canvas.getBoundingClientRect();
-      const sx = e.clientX - rect.left;
-      const sy = e.clientY - rect.top;
-      const spV = worldToScreen(state.v.x, state.v.y);
-
-      if (Math.hypot(sx - spV.x, sy - spV.y) < 24) {
-        state.isDragging = true;
-      }
-    });
-
-    window.addEventListener('mousemove', handlePointerMove);
-    window.addEventListener('mouseup', () => { state.isDragging = false; });
-
-    // Touch support
-    canvas.addEventListener('touchstart', (e) => {
-      if (e.touches.length === 1) {
-        const touch = e.touches[0];
-        const rect = canvas.getBoundingClientRect();
-        const sx = touch.clientX - rect.left;
-        const sy = touch.clientY - rect.top;
-        const spV = worldToScreen(state.v.x, state.v.y);
-        if (Math.hypot(sx - spV.x, sy - spV.y) < 30) {
-          state.isDragging = true;
-        }
-      }
-    }, { passive: true });
-
-    window.addEventListener('touchmove', (e) => {
-      if (e.touches.length === 1 && state.isDragging) {
-        handlePointerMove(e.touches[0]);
-      }
-    }, { passive: true });
-
-    window.addEventListener('touchend', () => { state.isDragging = false; });
-
-    // Floating Overlay Buttons
-    document.getElementById('btn-grid-transform').addEventListener('click', (e) => {
-      state.showGridTransform = !state.showGridTransform;
-      e.currentTarget.classList.toggle('active', state.showGridTransform);
-    });
-
-    document.getElementById('btn-snap').addEventListener('click', (e) => {
-      state.snapToEigenvector = !state.snapToEigenvector;
-      e.currentTarget.classList.toggle('active', state.snapToEigenvector);
-    });
-
-    document.getElementById('btn-reset-v').addEventListener('click', () => {
-      state.v = { x: 1.5, y: 1.0 };
-    });
-
-    document.getElementById('btn-theme').addEventListener('click', () => {
-      document.body.classList.toggle('light-theme');
-    });
-
-    // Start Simulation Loop
-    requestAnimationFrame(render);
-  </script>
 </body>
 </html>
