@@ -1,0 +1,263 @@
+
+:root {
+  color-scheme: light dark;
+  --bg: #f5f1e6;
+  --card-bg: #fbf8f1;
+  --bg-muted: #ede6d3;
+  --border: #d6c9a0;
+  --text: #2b2620;
+  --text-muted: #6b6355;
+  --primary: #4f46e5;
+  --primary-light: #818cf8;
+  --active: #9c4208;
+  --success: #0f7a52;
+  --radius: 12px;
+  --shadow: 0 1px 3px rgba(43,38,32,0.08), 0 4px 12px rgba(43,38,32,0.05);
+  --font: system-ui, -apple-system, "Segoe UI", sans-serif;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #1e1b16;
+  --card-bg: #2f2a22;
+  --bg-muted: #363026;
+  --border: #4a4232;
+  --text: #f2ead8;
+  --text-muted: #b8ad97;
+  --primary: #8b85f0;
+  --primary-light: #a6a1f5;
+  --active: #f5a524;
+  --success: #34d399;
+  --shadow: 0 1px 3px rgba(0,0,0,0.35), 0 4px 14px rgba(0,0,0,0.25);
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  margin: 0;
+  padding: 24px;
+}
+
+.home-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  max-width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.header-main h1 { margin: 0 0 6px 0; font-size: 24px; }
+.back-link { color: var(--primary); text-decoration: none; font-size: 14px; font-weight: 500; }
+.back-link:hover { text-decoration: underline; }
+
+.theme-toggle {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--bg-muted);
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.theme-toggle svg { width: 20px; height: 20px; }
+
+.toolbar {
+  max-width: 1100px;
+  margin: 0 auto 24px auto;
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.search-input {
+  flex: 1;
+  min-width: 240px;
+  padding: 10px 14px;
+  background: var(--bg-muted);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 14px;
+}
+.filter-group { display: flex; gap: 8px; }
+.filter-btn {
+  background: var(--bg-muted);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 13px;
+  color: var(--text);
+  cursor: pointer;
+}
+.filter-btn.active {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.grid-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+.tier-section h2 { margin: 0 0 16px 0; font-size: 20px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+.module-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 150ms var(--ease-out);
+}
+.module-card:hover { transform: translateY(-2px); }
+.card-title { font-size: 16px; font-weight: 700; margin: 0 0 12px 0; }
+.badge-row { display: flex; gap: 6px; margin-bottom: 16px; }
+.badge {
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 12px;
+  background: var(--bg-muted);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+}
+.card-actions { display: flex; gap: 8px; }
+.btn-preview {
+  flex: 1;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.btn-open {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 13px;
+  text-decoration: none;
+  text-align: center;
+}
+
+/* Modal Overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.6);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+.modal-overlay.open { display: flex; }
+.modal-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  width: 100%;
+  max-width: 900px;
+  height: 85vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border);
+}
+.modal-header h3 { margin: 0; font-size: 16px; }
+.modal-controls { display: flex; gap: 12px; align-items: center; }
+.view-switch { display: flex; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+.switch-btn { background: transparent; border: none; padding: 6px 12px; font-size: 12px; cursor: pointer; color: var(--text-muted); }
+.switch-btn.active { background: var(--primary); color: white; }
+.close-btn { background: transparent; border: none; font-size: 24px; cursor: pointer; color: var(--text); }
+
+.iframe-container {
+  flex: 1;
+  background: var(--bg);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  transition: width 200ms;
+}
+iframe.mobile-view {
+  width: 390px;
+  height: 90%;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+
+/* Enhanced Dark Mode Contrast & Hover Rules */
+.btn-primary:hover {
+  transform: scale(1.03);
+  filter: brightness(1.1);
+  background: var(--primary);
+}
+
+[data-theme="dark"] .btn-primary {
+  color: #1e1b16;
+  font-weight: 700;
+}
+
+[data-theme="dark"] .token-btn.active,
+[data-theme="dark"] .prec-btn.active,
+[data-theme="dark"] .filter-btn.active,
+[data-theme="dark"] .switch-btn.active {
+  color: #1e1b16;
+  font-weight: 700;
+}
+
+[data-theme="dark"] .cm-cell {
+  color: #1e1b16;
+  font-weight: 700;
+}
+
+[data-theme="dark"] .claim-g,
+[data-theme="dark"] .claim-p,
+[data-theme="dark"] .claim-h {
+  color: #1e1b16;
+  font-weight: 700;
+}
+
+.svg-text-on-accent {
+  fill: white;
+  font-weight: bold;
+}
+
+[data-theme="dark"] .svg-text-on-accent {
+  fill: #1e1b16;
+  font-weight: bold;
+}

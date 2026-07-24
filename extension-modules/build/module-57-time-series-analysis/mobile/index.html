@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Time Series Analysis — Interactive Diagram</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="card">
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+      <svg id="themeIconSun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      <svg id="themeIconMoon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8Z"/></svg>
+    </button>
+
+    <h2>Time Series Analysis — trend, seasonality & forecast</h2>
+
+    <ol class="steps-panel">
+      <li><strong>Step 1:</strong> Toggle components (Trend, Seasonality, Noise) to isolate additive signals.</li>
+      <li><strong>Step 2:</strong> Adjust the Forecast Horizon slider to project future monthly steps.</li>
+      <li><strong>Step 3:</strong> Compare original observed data against trend-seasonal decomposition.</li>
+    </ol>
+
+    <div class="detail">
+      <div class="svg-wrap">
+        <svg id="mainSvg" viewBox="0 0 500 300"></svg>
+      </div>
+    </div>
+
+    <div class="legend" id="legend">
+      <div class="legend-item"><span class="legend-swatch" style="background:var(--primary)"></span> Observed Data</div>
+      <div class="legend-item"><span class="legend-swatch" style="background:var(--active)"></span> Trend Line</div>
+      <div class="legend-item"><span class="legend-swatch" style="background:var(--cat-1)"></span> Forecast</div>
+    </div>
+
+    <div class="controls-grid">
+      <div class="control-row">
+        <label for="horizonSlider">Forecast Horizon: <span class="readout" id="horizonReadout">3 months</span></label>
+        <input type="range" id="horizonSlider" min="1" max="6" step="1" value="3">
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="btn-secondary" id="resetBtn">Reset</button>
+    </div>
+
+    <p class="explain-panel" id="explainPanel">Adjust forecast horizon to project trend and seasonal momentum into future periods.</p>
+    <p class="caption" id="caption">Classical time series analysis breaks a complex sequence into three additive signals: a long-term trend, a repeating seasonal cycle, and random residual noise.</p>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quantization — Interactive Diagram</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="card">
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+      <svg id="themeIconSun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      <svg id="themeIconMoon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8Z"/></svg>
+    </button>
+
+    <h2>Quantization — INT8 & 4-bit model compression</h2>
+
+    <ol class="steps-panel">
+      <li><strong>Step 1:</strong> Select a precision mode (FP32, FP16, INT8, INT4).</li>
+      <li><strong>Step 2:</strong> Examine scale factor (S) and zero-point (Z) mapping math.</li>
+      <li><strong>Step 3:</strong> Compare memory savings against reconstruction MSE error.</li>
+    </ol>
+
+    <div class="prec-picker">
+      <button class="prec-btn active" data-prec="FP32">FP32 (32-bit)</button>
+      <button class="prec-btn" data-prec="FP16">FP16 (16-bit)</button>
+      <button class="prec-btn" data-prec="INT8">INT8 (8-bit)</button>
+      <button class="prec-btn" data-prec="INT4">INT4 (4-bit)</button>
+    </div>
+
+    <div class="detail">
+      <div class="calc-card">
+        <h3 id="precTitle">Precision: FP32</h3>
+        <p id="quantFormula">q = float (unquantized)</p>
+        <p>Memory Footprint: <strong class="readout" id="memReadout">14.0 GB</strong> | Error MSE: <strong class="readout" id="errReadout" style="color:var(--success)">0.0000</strong></p>
+      </div>
+    </div>
+
+    <div class="legend" id="legend">
+      <div class="legend-item"><span class="legend-swatch" style="background:var(--primary)"></span> Original FP32</div>
+      <div class="legend-item"><span class="legend-swatch" style="background:var(--active)"></span> Quantized Value</div>
+    </div>
+
+    <div class="controls">
+      <button class="btn-secondary" id="resetBtn">Reset</button>
+    </div>
+
+    <p class="explain-panel" id="explainPanel">Select precision to see quantization scale factor and reconstruction error.</p>
+    <p class="caption" id="caption">Quantization maps high-precision floating-point weights into low-bit integers using scale and zero-point parameters, dramatically cutting memory footprint with minimal accuracy loss.</p>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

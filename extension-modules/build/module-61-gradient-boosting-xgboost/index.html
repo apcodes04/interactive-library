@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gradient Boosting / XGBoost — sequential error correction — Interactive Diagram</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="card">
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+      <svg id="themeIconSun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      <svg id="themeIconMoon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8Z"/></svg>
+    </button>
+
+    <h2>Gradient Boosting / XGBoost — sequential error correction</h2>
+
+    <ol class="steps-panel">
+      <li><strong>Step 1:</strong> Click any stage button, or drag the scrubber, to trace sequential boosting rounds.</li><li><strong>Step 2:</strong> Use "◀ Back" / "Next ▶" to step through manually.</li><li><strong>Step 3:</strong> Click "Run (auto-play)" to watch weak learners incrementally eliminate residual error.</li>
+    </ol>
+    <p class="hint">Every stage stays clickable before, during, and after auto-play.</p>
+
+    <div class="stage-nav" id="stageNav">
+      <button class="stage" id="s0" data-stage="0"><div class="stage-label">1. Base model</div><div class="stage-box">Initial constant<br>log-odds</div></button><button class="stage" id="s1" data-stage="1"><div class="stage-label">2. Tree 1</div><div class="stage-box">Fit weak tree 1<br>to residuals</div></button><button class="stage" id="s2" data-stage="2"><div class="stage-label">3. Update 1</div><div class="stage-box">Add Tree 1 &rarr;<br>errors shrink</div></button><button class="stage" id="s3" data-stage="3"><div class="stage-label">4. Tree 2</div><div class="stage-box">Fit weak tree 2<br>to residuals</div></button><button class="stage" id="s4" data-stage="4"><div class="stage-label">5. Update 2</div><div class="stage-box">Add Tree 2 &rarr;<br>errors shrink</div></button><button class="stage" id="s5" data-stage="5"><div class="stage-label">6. Boosted</div><div class="stage-box">Final ensemble<br>boundary</div></button>
+    </div>
+
+    <div class="detail">
+      <div class="svg-wrap">
+        <svg id="mainSvg" viewBox="0 0 500 300"></svg>
+      </div>
+    </div>
+
+    <div class="legend" id="legend"></div>
+
+    <div class="scrubber-row">
+      <label for="scrubber">Stage</label>
+      <input type="range" id="scrubber" min="0" max="5" step="1" value="0">
+      <span class="readout" id="stageReadout">1 / 6</span>
+    </div>
+
+    <div class="controls">
+      <button class="btn-primary" id="runBtn">Run (auto-play)</button>
+      <button class="btn-secondary" id="prevBtn">◀ Back</button>
+      <button class="btn-secondary" id="nextBtn">Next ▶</button>
+      <button class="btn-secondary" id="resetBtn">Reset</button>
+    </div>
+
+    <p class="explain-panel" id="explainPanel"></p>
+    <p class="caption" id="caption">Gradient boosting builds trees sequentially, with each new weak learner trained specifically to predict the residual errors left over by all previous trees combined.</p>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

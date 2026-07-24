@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Logistic Regression — Interactive Diagram</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="card">
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+      <svg id="themeIconSun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      <svg id="themeIconMoon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8Z"/></svg>
+    </button>
+
+    <h2>Logistic Regression — probabilities & decision boundary</h2>
+
+    <ol class="steps-panel">
+      <li><strong>Step 1:</strong> Drag the Decision Threshold slider to shift the cutoff probability between Class A & B.</li>
+      <li><strong>Step 2:</strong> Drag the Sigmoid Steepness (k) slider to sharpen or flatten the probability curve.</li>
+      <li><strong>Step 3:</strong> Observe how continuous log-odds transform into calibrated probabilities.</li>
+    </ol>
+
+    <div class="detail-split">
+      <div class="svg-wrap">
+        <svg id="scatterSvg" viewBox="0 0 300 250"></svg>
+      </div>
+      <div class="svg-wrap">
+        <svg id="sigmoidSvg" viewBox="0 0 300 250"></svg>
+      </div>
+    </div>
+
+    <div class="legend" id="legend">
+      <div class="legend-item"><span class="legend-swatch" style="background:var(--primary)"></span> Class A Point</div>
+      <div class="legend-item"><span class="legend-swatch" style="background:var(--active)"></span> Class B Point</div>
+      <div class="legend-item"><span class="legend-swatch" style="background:var(--primary-light)"></span> Boundary Line</div>
+      <div class="legend-item"><span class="legend-swatch" style="background:var(--success)"></span> Threshold (t)</div>
+    </div>
+
+    <div class="controls-grid">
+      <div class="control-row">
+        <label for="thresholdSlider">Decision Threshold (t): <span class="readout" id="threshReadout">0.50</span></label>
+        <input type="range" id="thresholdSlider" min="0.10" max="0.90" step="0.02" value="0.50">
+      </div>
+      <div class="control-row">
+        <label for="steepnessSlider">Sigmoid Steepness (k): <span class="readout" id="steepReadout">1.00</span></label>
+        <input type="range" id="steepnessSlider" min="0.20" max="3.00" step="0.10" value="1.00">
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="btn-secondary" id="resetBtn">Reset</button>
+    </div>
+
+    <p class="explain-panel" id="explainPanel">Adjust the threshold and steepness to see log-odds mapped into class probabilities.</p>
+    <p class="caption" id="caption">Logistic regression passes a linear combination of features through a sigmoid S-curve, turning unbounded scores into calibrated probabilities bounded between 0 and 1.</p>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
